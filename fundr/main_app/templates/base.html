@@ -11,7 +11,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-{% if mobile %}
 <body>
   <header class="navbar-fixed justify-content-between d-flex align-items-center header-clr">
     <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo"></div>
@@ -60,51 +59,6 @@
     </div>
   </div>
 </body>
-{% else %}
-<body class="header-clr d-flex justify-content-center">
-  <div class="container d-flex flex-row justify-content-between text-center fill_screen">
-    <div class="row align-items-start"></div>
-      <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2">
-        <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
-        <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h1">FUNDR</a></div>
-        <div>HOME</div>
-        <div>EXPLORE</div>
-        <div>SAVED</div>
-      </div>
 
 
-      <div class="col-md-6 light-grey">      
-        {% block desktop-content %}
-        {% endblock %}
-      </div>
-
-
-      <div class="col-md-3 d-flex flex-column header-clr pt-2 d-flex flex-column justify-content-between align-items-start text-white">
-        <ul class="d-flex align-items-start navbar-nav pe-3">
-          <li class="nav-item">
-            <a class="nav-link" href="#">YOUR FUNDRS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">USER SETTINGS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LOG OUT</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav pe-3 d-flex flex-column justify-content-end align-items-start">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Terms & Privacy</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</body>
-{% endif %}
 </html>
