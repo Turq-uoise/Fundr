@@ -1,11 +1,23 @@
+
+# Create your views here.
+
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
+from .helper import *
+
+# Create your views here.
+def home(request): 
+  mobile = is_mobile(request)
+  return render(request, 'home.html', { 'mobile' : mobile })
+
+
 # Create your views here.
 def home(request): 
 	return render(request, 'home.html')
+
 
 def signup(request):
   error_message = ''
@@ -24,4 +36,7 @@ def signup(request):
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
   context = {'form': form, 'error_message': error_message}
+
   return render(request, 'registration/signup.html', context)
+
+
