@@ -11,12 +11,14 @@ from .helper import *
 # Create your views here.
 def home(request): 
   mobile = is_mobile(request)
-  return render(request, 'home.html', { 'mobile' : mobile })
+  print(mobile)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+  print(template)
+  return render(request, 'home.html', { 'template' : template })
 
-
-# Create your views here.
-def home(request): 
-	return render(request, 'home.html')
 
 
 def signup(request):
