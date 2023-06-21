@@ -1,8 +1,75 @@
-<h1>Log in</h1>
+{% extends 'base-head-only.html' %}
+{% block content %}
+{% load static %}
 
-<form method="POST" action="{% url 'login' %}">
+<!-- <form method="POST" action="{% url 'login' %}">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="next" value="{{ next }}">
     <button type="submit" class="btn">Log In</button>
-</form>
+</form> -->
+
+<div class="login-page light-grey" style="height: 100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <div class="jumbotron jumbotron-fluid mt-4 mb-4">
+                    <div class="container">
+                      <h1 class="display-4">Welcome to <span id="fundr-white" class="fw-bold header-clrc">FUNDR</span></h1>
+                      <p class="lead">The app for local people, to help local people.</p>
+                    </div>
+                </div>
+                <!-- <h3 class="mb-3">Login to FUNDR</h3> -->
+                <div class="bg-white shadow rounded mt-4">
+                    <div class="row">
+                        <div class="col-md-7 pe-0">
+                            <div class="form-left h-100 py-5 px-5">
+                                <form action="{% url 'login' %}" method="POST" class="row g-4">
+                                    {% csrf_token %}
+                                        <div class="col-12">
+                                            <label>Username<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                                                <input type="text" class="form-control" name="username" placeholder="Enter Username">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label>Password<span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="bi bi-lock-fill"></i></div>
+                                                <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Enter Password">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <a href="#" class="float-end text-primary">Forgot Password?</a>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary px-4 float-end mt-4">login</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-5 ps-0 d-none d-md-block">
+                            <div class="form-right h-100 bg-primary text-white text-center pt-5 home-img">
+                                <i class="bi bi-bootstrap"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar fixed-bottom dark-grey">
+    <div class="dark-grey container-fluid justify-content-start d-flex">
+      <a class="text-decoration-none main-bgc p-2" href="#cookies">Cookies</a>
+      <a class="text-decoration-none main-bgc p-2" href="#terms">Terms & Conditions</a>
+      <a class="text-decoration-none main-bgc p-2" href="#privacy">Privacy Policy</a>
+    </div>
+</nav>
+     
+{% endblock %}

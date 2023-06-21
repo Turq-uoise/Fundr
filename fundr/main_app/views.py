@@ -19,7 +19,8 @@ def home(request):
   print(template)
   return render(request, 'home.html', { 'template' : template })
 
-
+def login(request):
+  return redirect('accounts/login/')
 
 def signup(request):
   error_message = ''
