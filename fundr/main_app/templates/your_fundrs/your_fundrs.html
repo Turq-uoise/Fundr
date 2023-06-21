@@ -1,0 +1,14 @@
+{% extends template %}
+{% block content %}
+
+<h1>Your Fundrs</h1>
+<a class="btn btn-primary" href="{% url 'new_fundr' %}">New Fundr</a>
+
+
+{% if user.is_authenticated %}
+    <p>Authenticated - yes</p>
+{% else %}
+    <p>Authenticated - no</p>
+{% endif %}
+
+{% endblock %}
