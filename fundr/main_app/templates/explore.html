@@ -1,4 +1,23 @@
 {% extends template %}
 {% block content %}
-<h1>Explore</h1>
+
+<h1>FUNDRS in your area!</h1>
+<hr>
+{% for fundr in fundrs %}
+  <div id="board">
+    <div class="card">
+      <span class="card-title h3 accent-clr">{{ fundr.name }}</span>
+      <div class="fundr-img"><img src="https://media.discordapp.net/attachments/754607431442628700/1120707301263806464/Fy_R4xTXgAEIUS_.png?width=579&height=473" class="img-fluid"></div>
+      <p>Bio: {{ fundr.bio }}</p>
+      {% if fundr.goal == fundr.current %}
+        <p>Fully Funded!</p>
+      {% else %}
+        <p>{{ fundr.current }} out of {{ fundr.goal }} funded!</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+
+
 {% endblock %}

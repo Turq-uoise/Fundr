@@ -1,11 +1,10 @@
 
-# Create your views here.
-
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
+from .models import Fundraiser, Post, Profile
 from .helper import *
 
 # Create your views here.
@@ -46,7 +45,9 @@ def explore(request):
      template = 'base.html'
   else:
      template = 'base-desktop.html'
-  return render(request, 'explore.html', { 'template' : template })
+
+  fundrs = Fundraiser.objects.all()
+  return render(request, 'explore.html', { 'template' : template, 'fundrs': fundrs })
 
 def saved(request):
   mobile = is_mobile(request)
@@ -55,3 +56,13 @@ def saved(request):
   else:
      template = 'base-desktop.html'
   return render(request, 'saved/index.html', { 'template' : template })
+
+def detail(request, fundr_id):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+
+  fundr = Fundraiser.objects.id(id=fundr_id)
+  return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
