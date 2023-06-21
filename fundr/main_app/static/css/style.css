@@ -17,8 +17,16 @@ html, body {
   background-color: var(--main-bg);
 }
 
+.main-bgc {
+  color: var(--main-bg);
+}
+
 .header-clr {
   background-color: var(--header-clr);
+}
+
+.header-clrc {
+  color: var(--header-clr);
 }
 
 .post-bg {
@@ -43,6 +51,12 @@ html, body {
 
 .nav_icon {
   width: 150px;
+}
+
+.home-img {
+  background-image: url("../main_app/home_pic.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .fill_screen {
