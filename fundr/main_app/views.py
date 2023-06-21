@@ -3,8 +3,9 @@
 
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
-from django.contrib.auth import login
+from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
+from .models import *
 
 from .helper import *
 
@@ -29,11 +30,18 @@ def signup(request):
     if form.is_valid():
       # This will add the user to the database
       user = form.save()
+      print(request.POST)
       # This is how we log a user in via code
-      login(request, user)
-      return redirect('index')
+      login_process(request, user)
+      #get avatar and associate avatar:
+      # def assoc_avatar(request, user_id):
+      #   avatar = request.POST.get("avatar", "")
+      #   Profile.objects.get(user_id=user_id).avatar.add(avatar)
+      # assoc_avatar(request, user_id)
+      return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
+      print(error_message)
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
   context = {'form': form, 'error_message': error_message}
@@ -55,3 +63,4 @@ def saved(request):
   else:
      template = 'base-desktop.html'
   return render(request, 'saved/index.html', { 'template' : template })
+

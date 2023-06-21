@@ -68,3 +68,7 @@ html, body {
 .footer-band {
   background-color: var(--dark-grey);
 }
+
+.smallspan {
+  font-size: 10px;
+}
