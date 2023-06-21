@@ -11,12 +11,10 @@ from .helper import *
 # Create your views here.
 def home(request): 
   mobile = is_mobile(request)
-  print(mobile)
   if mobile:
      template = 'base.html'
   else:
      template = 'base-desktop.html'
-  print(template)
   return render(request, 'home.html', { 'template' : template })
 
 
@@ -41,4 +39,18 @@ def signup(request):
 
   return render(request, 'registration/signup.html', context)
 
+def explore(request):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+  return render(request, 'explore.html', { 'template' : template })
 
+def saved(request):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+  return render(request, 'saved/index.html', { 'template' : template })

@@ -18,14 +18,14 @@
       <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2">
         <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
         <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h1">FUNDR</a></div>
-        <div>HOME</div>
-        <div>EXPLORE</div>
-        <div>SAVED</div>
+        <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none">HOME</a></div>
+        <div><a href="{% url 'explore' %}" class="left brand-logo text-white text-decoration-none">EXPLORE</a></div>
+        <div><a href="{% url 'index' %}" class="left brand-logo text-white text-decoration-none">SAVED</a></div>
       </div>
 
 
       <div class="col-md-6 light-grey">      
-        {% block desktop-content %}
+        {% block content %}
         {% endblock %}
       </div>
 
