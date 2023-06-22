@@ -53,8 +53,6 @@ class Fundraiser(models.Model):
     def __str__(self):
         return self.name
     
-    def get_absoloute_url(self):
-        return reverse('fundraiser_detail', kwargs={'pk': self.id})
     
 
 class Post(models.Model):
