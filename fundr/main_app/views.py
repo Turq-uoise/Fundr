@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from .forms import *
 
 
 from .forms import ProfileForm, FundrForm
@@ -81,14 +83,40 @@ def your_fundrs(request):
      template = 'base.html'
   else:
      template = 'base-desktop.html'
+  fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
+  print(type(fundrs))
+  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
-  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, })
 
-def new_fundr(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
 
-  return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
+class FundrCreate(CreateView):
+  
+  model = Fundraiser
+  form_class= FundrForm
+  success_url = '/your_fundrs'
+  
+  def get(self, request, *args, **kwargs):
+      # Access the request object here
+      # You can perform any necessary operations with the request
+      self.request = request
+      # Call the parent class's get() method to handle form-related logic
+      return super().get(request, *args, **kwargs)
+
+  def get_context_data(self, **kwargs):
+      context = super().get_context_data(**kwargs)
+      mobile = is_mobile(self.request)
+      if mobile:
+          template = 'base.html'
+      else:
+          template = 'base-desktop.html'
+      context['template'] = template
+      # Access the request object through self.request here
+      # You can add additional context variables based on the request
+
+      return context
+
+  def form_valid(self, form):
+      # Access the user and add it to the model entry
+      print(self.request.user.profile)
+      form.instance.owner = self.request.user.profile
+      return super().form_valid(form)
