@@ -18,6 +18,7 @@ import pgeocode
 
 # Create your views here.
 def home(request): 
+  
   template = is_mobile(request)
   
   return render(request, 'home.html', { 'template' : template })
@@ -74,6 +75,32 @@ def your_fundrs(request):
   print(type(fundrs))
   return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
+def store_user_location(request):
+  print(request.user)
+  if request.method == 'POST':
+    if request.user.is_authenticated:
+      #Convert the raw HttpRequest body bytestring into a python dict:
+      req_params = json.loads(request.body.decode('utf-8'))
+      #Store the user idea of the authenticated user:
+      req_user_id = request.user.id
+      #Store the lat and lon variables:
+      latitude = req_params["userlat"]
+      longitude = req_params["userlon"]
+      #Get the correct profile object:
+      profile_to_update = Profile.objects.get(user_id=req_user_id)
+      #Update the profile object:
+      profile_to_update.latitude = latitude
+      profile_to_update.longitude = longitude
+      profile_to_update.save()
+      print('saved??')
+      return JsonResponse({'message': 'Location stored successfully'})
+    else:
+        print('User not authenticated')
+        return JsonResponse({'error': 'User not authenticated'}, status=401)
+  else:
+    print('Invalid request method')  
+    return JsonResponse({'error': 'Invalid request method'})
+
 class FundrCreate(CreateView):
   
   model = Fundraiser
@@ -107,22 +134,5 @@ class FundrCreate(CreateView):
 
 
 
-def store_user_location(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated:
-      #Convert the raw HttpRequest body bytestring into a python dict:
-      req_params = json.loads(request.body.decode('utf-8'))
-      #Store the user idea of the authenticated user:
-      req_user_id = request.user.id
-      #Store the lat and lon variables:
-      latitude = req_params["userlat"]
-      longitude = req_params["userlon"]
-      #Get the correct profile object:
-      profile_to_update = Profile.objects.get(user_id=req_user_id)
-      #Update the profile object:
-      profile_to_update.latitude = latitude
-      profile_to_update.longitude = longitude
-      profile_to_update.save()
-      return JsonResponse({'message': 'Location stored successfully'})
-    return JsonResponse({'error': 'Invalid request method'})
+
   
