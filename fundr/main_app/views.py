@@ -12,7 +12,11 @@ from .helper import *
 
 # Create your views here.
 def home(request): 
-  template = is_mobile(request)
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
   
   return render(request, 'home.html', { 'template' : template })
 
@@ -70,3 +74,21 @@ def detail(request, fundr_id):
 
   fundr = Fundraiser.objects.id(id=fundr_id)
   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
+
+def your_fundrs(request):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+
+  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, })
+
+def new_fundr(request):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
+
+  return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
