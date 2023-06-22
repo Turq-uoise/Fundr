@@ -7,6 +7,9 @@ from django.core import serializers
 import json
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import *
+from django.http import JsonResponse
+import json
+
 from django.core import serializers
 from .models import Fundraiser, Post, Profile
 from .helper import *
@@ -32,14 +35,8 @@ def signup(request):
       # This will add the user to the database
       user = form.save()
       print(request.POST)
-
       # This is how we log a user in via code
       login_process(request, user)
-      #get avatar and associate avatar:
-      # def assoc_avatar(request, user_id):
-      #   avatar = request.POST.get("avatar", "")
-      #   Profile.objects.get(user_id=user_id).avatar.add(avatar)
-      # assoc_avatar(request, user_id)
       return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
@@ -100,10 +97,32 @@ class FundrCreate(CreateView):
       return context
   
   def form_valid(self, form):
-      # Access the user and add it to the model entry
-      nomi = pgeocode.Nominatim('gb')
-      post_code = formatPostcode(form.instance.location).upper()
-      form.instance.lat = nomi.query_postal_code(post_code).latitude
-      form.instance.long = nomi.query_postal_code(post_code).longitude
-      form.instance.owner = self.request.user.profile
-      return super().form_valid(form)
+    # Access the user and add it to the model entry
+    nomi = pgeocode.Nominatim('gb')
+    post_code = formatPostcode(form.instance.location).upper()
+    form.instance.lat = nomi.query_postal_code(post_code).latitude
+    form.instance.long = nomi.query_postal_code(post_code).longitude
+    form.instance.owner = self.request.user.profile
+    return super().form_valid(form)
+
+
+
+def store_user_location(request):
+  if request.method == 'POST':
+    if request.user.is_authenticated:
+      #Convert the raw HttpRequest body bytestring into a python dict:
+      req_params = json.loads(request.body.decode('utf-8'))
+      #Store the user idea of the authenticated user:
+      req_user_id = request.user.id
+      #Store the lat and lon variables:
+      latitude = req_params["userlat"]
+      longitude = req_params["userlon"]
+      #Get the correct profile object:
+      profile_to_update = Profile.objects.get(user_id=req_user_id)
+      #Update the profile object:
+      profile_to_update.latitude = latitude
+      profile_to_update.longitude = longitude
+      profile_to_update.save()
+      return JsonResponse({'message': 'Location stored successfully'})
+    return JsonResponse({'error': 'Invalid request method'})
+  
