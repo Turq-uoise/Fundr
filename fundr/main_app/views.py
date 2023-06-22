@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
-from .models import *
+from django.core import serializers
+import json
 
+from .models import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
 
@@ -65,19 +67,11 @@ def detail(request, fundr_id):
   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
 
 def your_fundrs(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
 
   return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, })
 
 def new_fundr(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
 
   return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
