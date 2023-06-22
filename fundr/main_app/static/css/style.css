@@ -87,3 +87,32 @@ html, body {
   background-color: white;
   transform: translateX(-50%) translateY(-50%);
 }
+
+.description{
+  height: 20vmin;
+}
+
+.container-content{
+  overflow-y: scroll  
+}
+.mb-n0{
+  margin-bottom: -100%;
+}
+.m-firstcard{
+  margin-top: 60%;
+}
+.btn{
+  margin-top: 100%;
+}
+
+@media only screen and (max-width: 600px){
+  .mb-n0{
+    margin-bottom: -50%;
+  }
+  .m-firstcard{
+    margin-top: 75%;
+  }
+  btn{
+    margin-top: 125%;
+  }
+}
