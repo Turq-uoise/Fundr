@@ -30,20 +30,34 @@
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
-    fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+    if (currentFunded == goal) {
+      fundrFunded.innerText = `Fully Funded: ${goal}!`;
+    }
+    else {
+      fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+    }
 
 
     nextButton.addEventListener("click", function() {
         currentIndex++;
-        console.log(currentIndex)
         if (currentIndex < fundrs.length) {
           let fundrObj = fundrs[currentIndex]
           fundrName.innerText = fundrObj.fields.name;
           fundrBio.innerText = fundrObj.fields.bio;
           currentFunded = fundrs[currentIndex].fields.current;
           goal = fundrs[currentIndex].fields.goal;
-          fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
-            // Update other attributes of the next object as needed
+
+          if (currentFunded == goal) {
+            fundrFunded.innerText = `Fully Funded: ${goal}!`;
+          } else {
+            fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+          }
+        }
+        else {
+          fundrName.innerText = "No more Fundrs to show!";
+          fundrBio.style.display = "none";
+          fundrFunded.style.display = "none";
+          nextButton.style.display = "none";
         }
     });
   });
