@@ -81,20 +81,20 @@ class FundrCreate(CreateView):
   success_url = '/your_fundrs'
   template_name = 'your_fundrs/new_fundr.html'
   def get(self, request, *args, **kwargs):
-      # Access the request object here
-      # You can perform any necessary operations with the request
-      self.request = request
-      # Call the parent class's get() method to handle form-related logic
-      return super().get(request, *args, **kwargs)
+    # Access the request object here
+    # You can perform any necessary operations with the request
+    self.request = request
+    # Call the parent class's get() method to handle form-related logic
+    return super().get(request, *args, **kwargs)
 
   def get_context_data(self, **kwargs):
-      context = super().get_context_data(**kwargs)
-      template = is_mobile(self.request)
-      context['template'] = template
-      # Access the request object through self.request here
-      # You can add additional context variables based on the request
+    context = super().get_context_data(**kwargs)
+    template = is_mobile(self.request)
+    context['template'] = template
+    # Access the request object through self.request here
+    # You can add additional context variables based on the request
 
-      return context
+    return context
   
   def form_valid(self, form):
     # Access the user and add it to the model entry
