@@ -54,14 +54,14 @@
     });
 
   </script>
-  <header class="navbar-fixed justify-content-between d-flex align-items-center header-clr">
+  <header class="navbar-fixed justify-content-between d-flex align-items-center header-clr z-3 position-sticky ">
     <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo"></div>
     <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h2" id="FUNDR">FUNDR</a></div>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
       <span class="m-2"><img src="{% static 'main_app/hamburger_icon_white.svg' %}" alt="Hamburger Menu" width="50px"></span>
     </button>
   </header>
-  <main class="container">
+  <main class="container z-0">
       {% block content %}
       {% endblock %}
   </main>
