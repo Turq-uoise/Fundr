@@ -5,20 +5,13 @@ from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
 import json
-
-
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import *
-
-
 from django.core import serializers
-import json
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import *
-
-from .models import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
+import pgeocode
+
 
 # Create your views here.
 def home(request): 
@@ -39,6 +32,7 @@ def signup(request):
       # This will add the user to the database
       user = form.save()
       print(request.POST)
+
       # This is how we log a user in via code
       login_process(request, user)
       #get avatar and associate avatar:
@@ -104,3 +98,12 @@ class FundrCreate(CreateView):
       # You can add additional context variables based on the request
 
       return context
+  
+  def form_valid(self, form):
+      # Access the user and add it to the model entry
+      nomi = pgeocode.Nominatim('gb')
+      post_code = formatPostcode(form.instance.location).upper()
+      form.instance.lat = nomi.query_postal_code(post_code).latitude
+      form.instance.long = nomi.query_postal_code(post_code).longitude
+      form.instance.owner = self.request.user.profile
+      return super().form_valid(form)

@@ -9,9 +9,9 @@
   
       <div class="col">
         {% if forloop.counter == 1%}
-        <div class="card mb-n0 m-firstcard" style="width: 100%;">
+        <div class="card  m-firstcard" style="width: 100%;">
         {% else %}
-        <div class="card mb-n0" style="width: 100%;">
+        <div class="card " style="width: 100%;">
         {% endif %}
           <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="card-img-top"
             alt="Hollywood Sign on The Hill">
@@ -25,10 +25,14 @@
       </div>
     {% endfor %}
   </div>
+    <div>
+   <a class="btn btn-primary" href="{% url 'new_fundr' %}">New Fundr</a> 
   </div>
+
+</div>
   
+
   
-  <a class="btn btn-primary" href="{% url 'new_fundr' %}">New Fundr</a>
   
   
   {% if user.is_authenticated %}
