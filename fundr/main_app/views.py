@@ -20,8 +20,7 @@ def home(request):
   
   return render(request, 'home.html', { 'template' : template })
 
-def login(request, password):
-  print(password)
+def login(request):
   return redirect('accounts/login/')
 
 def signup(request):
