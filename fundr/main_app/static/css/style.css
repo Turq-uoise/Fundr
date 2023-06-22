@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   --main-bg: white;
-  --header-clr: #0EB29A;
+  --header-clr: #005a4c;
   --post-bg: #F5FDFF;
   --accent-clr: #DDF0C2;
   --dark-grey: #8C999A; 
@@ -11,6 +11,11 @@
 html, body {
   margin: 0px;
   height: 100%;
+  font-family: 'Work Sans', sans-serif;
+}
+
+#FUNDR {
+  font-family: 'Lexend Peta', sans-serif;
 }
 
 .main-bg {
@@ -46,7 +51,7 @@ html, body {
 }
 
 .logo {
-  max-width: 10vmin;
+  max-width: 40px;
 }
 
 .nav_icon {

@@ -9,6 +9,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fundr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"> 
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Peta:wght@700&family=Work+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
   <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -54,14 +57,22 @@
 
   </script>
 
-  <div class="container d-flex flex-row justify-content-between text-center fill_screen">
+  <div class="container d-flex flex-row justify-content-between text-center">
     <div class="row align-items-start"></div>
       <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2">
-        <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
-        <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h1">FUNDR</a></div>
-        <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none">HOME</a></div>
-        <div><a href="{% url 'explore' %}" class="left brand-logo text-white text-decoration-none">EXPLORE</a></div>
-        <div><a href="{% url 'index' %}" class="left brand-logo text-white text-decoration-none">SAVED</a></div>
+        <div class="d-flex align-items-center">
+          <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
+          <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h3" id="FUNDR">FUNDR</a></div>
+        </div>
+        <div class="mt-4 d-flex">
+          <a href="{% url 'home' %}" class="mx-5 text-white text-decoration-none">HOME</a>
+        </div>
+        <div class="mt-2 d-flex">
+          <a href="{% url 'explore' %}" class="mx-5 text-white text-decoration-none">EXPLORE</a>
+        </div>
+        <div class="mt-2 d-flex">
+          <a href="{% url 'index' %}" class="mx-5 text-white text-decoration-none">SAVED</a>
+        </div>
       </div>
 
 
