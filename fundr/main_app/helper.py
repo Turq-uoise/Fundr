@@ -10,3 +10,6 @@ def formatPostcode(postcode):
    arr = [x for x in postcode if x != " "]
    arr[-3:-3] = ' '
    return ''.join(arr)
+
+
+

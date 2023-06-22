@@ -18,9 +18,10 @@ import pgeocode
 
 # Create your views here.
 def home(request): 
+  if (request.user.is_authenticated != True):
+    return redirect('/accounts/login/')
   
   template = is_mobile(request)
-  
   return render(request, 'home.html', { 'template' : template })
 
 def login(request):
@@ -50,6 +51,10 @@ def signup(request):
   return render(request, 'registration/signup.html', context)
 
 def explore(request):
+  if (request.user.is_authenticated != True):
+    return redirect('/accounts/login/')
+  
+
   template = is_mobile(request)
   
   fundrs = Fundraiser.objects.all()
@@ -57,11 +62,17 @@ def explore(request):
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
 def saved(request):
+  if (request.user.is_authenticated != True):
+    return redirect('/accounts/login/')
+  
   template = is_mobile(request)
   
   return render(request, 'saved/index.html', { 'template' : template })
 
 def detail(request, fundr_id):
+  if (request.user.is_authenticated != True):
+    return redirect('/accounts/login/')
+  
   template = is_mobile(request)
 
   fundr = Fundraiser.objects.id(id=fundr_id)
@@ -70,6 +81,9 @@ def detail(request, fundr_id):
 
 
 def your_fundrs(request):
+  if (request.user.is_authenticated != True):
+    return redirect('/accounts/login/')
+  
   template = is_mobile(request)
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
   print(type(fundrs))
@@ -103,6 +117,7 @@ def store_user_location(request):
 
 class FundrCreate(CreateView):
   
+  
   model = Fundraiser
   form_class= FundrForm
   success_url = '/your_fundrs'
@@ -111,6 +126,8 @@ class FundrCreate(CreateView):
     # Access the request object here
     # You can perform any necessary operations with the request
     self.request = request
+    if (request.user.is_authenticated != True):
+      return redirect('/accounts/login/')
     # Call the parent class's get() method to handle form-related logic
     return super().get(request, *args, **kwargs)
 
