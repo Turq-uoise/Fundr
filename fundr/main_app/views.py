@@ -3,7 +3,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
-
+from django.http import JsonResponse
+import json
 
 from .forms import ProfileForm, FundrForm
 
@@ -33,14 +34,8 @@ def signup(request):
     if form.is_valid():
       # This will add the user to the database
       user = form.save()
-      print(request.POST)
       # This is how we log a user in via code
       login_process(request, user)
-      #get avatar and associate avatar:
-      # def assoc_avatar(request, user_id):
-      #   avatar = request.POST.get("avatar", "")
-      #   Profile.objects.get(user_id=user_id).avatar.add(avatar)
-      # assoc_avatar(request, user_id)
       return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
@@ -92,3 +87,22 @@ def new_fundr(request):
      template = 'base-desktop.html'
 
   return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
+
+def store_user_location(request):
+  if request.method == 'POST':
+    if request.user.is_authenticated:
+      #Convert the raw HttpRequest body bytestring into a python dict:
+      req_params = json.loads(request.body.decode('utf-8'))
+      #Store the user idea of the authenticated user:
+      req_user_id = request.user.id
+      #Store the lat and lon variables:
+      latitude = req_params["userlat"]
+      longitude = req_params["userlon"]
+      #Get the correct profile object:
+      profile_to_update = Profile.objects.get(user_id=req_user_id)
+      #Update the profile object:
+      profile_to_update.latitude = latitude
+      profile_to_update.longitude = longitude
+      profile_to_update.save()
+      return JsonResponse({'message': 'Location stored successfully'})
+    return JsonResponse({'error': 'Invalid request method'})

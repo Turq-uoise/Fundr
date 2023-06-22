@@ -11,6 +11,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.CharField(max_length=200)
     location = models.CharField(max_length=7, default="")
+    latitude = models.FloatField(default=0.0, null=True)
+    longitude = models.FloatField(default=0.0, null=True)
 
     def __str__(self):
         return self.user.username
