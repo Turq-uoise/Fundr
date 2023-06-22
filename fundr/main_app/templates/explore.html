@@ -9,7 +9,11 @@
     <span class="card-title h3 accent-clr" id="fundr-name"></span>
     <p id="fundr-bio"></p>
     <p id="fundr-funded"></p>
-    <button id="next-button">Next</button>
+    {% if template == "base-desktop.html" %}
+      <button id="next-button">Next</button>
+    {% else %}
+      <button id="next-button" style="width: 100vw; height: 100vh; border: none; outline: none; position: fixed; top: 0; left: 0; background: transparent"></button>
+    {% endif %}
   </div>
 </div>
 
