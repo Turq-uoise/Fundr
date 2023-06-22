@@ -1,6 +1,5 @@
 def is_mobile(request):
-  if "Mobile" in request.META['HTTP_USER_AGENT']:
-     template = 'base.html'
+  if ("Mobile" in request.META['HTTP_USER_AGENT']):
+    return 'base.html'
   else:
-     template = 'base-desktop.html'
-  return template
+    return 'base-desktop.html'

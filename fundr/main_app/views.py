@@ -5,8 +5,6 @@ from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
 import json
-
-
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .forms import *
 
@@ -23,11 +21,9 @@ from .helper import *
 # Create your views here.
 def home(request): 
   template = is_mobile(request)
-  
   return render(request, 'home.html', { 'template' : template })
 
-def login(request, password):
-  print(password)
+def login(request):
   return redirect('accounts/login/')
 
 def signup(request):
@@ -60,40 +56,55 @@ def signup(request):
 
 def explore(request):
   template = is_mobile(request)
-  
-  fundrs = Fundraiser.objects.all()
-  serialized_fundrs = serializers.serialize('json', fundrs)
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
+  return render(request, 'explore.html', { 'template' : template })
 
 def saved(request):
   template = is_mobile(request)
-  
   return render(request, 'saved/index.html', { 'template' : template })
 
 def detail(request, fundr_id):
   template = is_mobile(request)
+  fundr = Fundraiser.objects.id(id=fundr_id)
+  return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
+
+def detail(request, fundr_id):
+  mobile = is_mobile(request)
+  if mobile:
+     template = 'base.html'
+  else:
+     template = 'base-desktop.html'
 
   fundr = Fundraiser.objects.id(id=fundr_id)
   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
 
 def your_fundrs(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
+  fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
+  print(type(fundrs))
+  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
-  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, })
 
-def new_fundr(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
 
-  def form_valid(self, form):
-      # Access the user and add it to the model entry
-      print(self.request.user.profile)
-      form.instance.owner = self.request.user.profile
-      return super().form_valid(form)
+class FundrCreate(CreateView):
+  
+  model = Fundraiser
+  form_class= FundrForm
+  success_url = '/your_fundrs'
+  template_name = 'your_fundrs/new_fundr.html'
+  def get(self, request, *args, **kwargs):
+      # Access the request object here
+      # You can perform any necessary operations with the request
+      self.request = request
+      # Call the parent class's get() method to handle form-related logic
+      return super().get(request, *args, **kwargs)
+
+  def get_context_data(self, **kwargs):
+      context = super().get_context_data(**kwargs)
+      template = is_mobile(self.request)
+      context['template'] = template
+      # Access the request object through self.request here
+      # You can add additional context variables based on the request
+
+      return context
+
+  return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
