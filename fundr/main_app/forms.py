@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import User, Profile
+from .models import User, Profile, Fundraiser
 
 class UserForm(ModelForm):
     class Meta:
@@ -10,3 +10,8 @@ class ProfileForm(ModelForm):
     class Meta:
         model = Profile
         fields = ('avatar', 'location')
+    
+class FundrForm(ModelForm):
+    class Meta:
+        model = Fundraiser
+        fields = ('name', 'bio', 'description', 'goal', 'location')

@@ -1,0 +1,14 @@
+{% extends template %}
+{% block content %}
+
+<h1>new fundr page</h1>
+{{ fundr_form.as_p}}
+
+
+{% if user.is_authenticated %}
+    <p>Authenticated - yes</p>
+{% else %}
+    <p>Authenticated - no</p>
+{% endif %}
+
+{% endblock %}
