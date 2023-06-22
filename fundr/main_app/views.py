@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from .forms import ProfileForm, FundrForm
 
 from .helper import *
 
@@ -34,6 +35,7 @@ def signup(request):
       error_message = 'Invalid sign up - try again'
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
+  
   context = {'form': form, 'error_message': error_message}
 
   return render(request, 'registration/signup.html', context)
@@ -55,6 +57,6 @@ def your_fundrs(request):
 
 def new_fundr(request):
   template = is_mobile(request)
-
-  return render(request, 'your_fundrs/new_fundr.html', {'template' : template})
+  fundr_form = FundrForm
+  return render(request, 'your_fundrs/new_fundr.html', {'template' : template, 'fundr_form': fundr_form})
 
