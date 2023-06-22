@@ -3,18 +3,17 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
-from .models import *
+from django.core import serializers
+import json
 
+from .models import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
 
 # Create your views here.
 def home(request): 
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
+  
   return render(request, 'home.html', { 'template' : template })
 
 def login(request):
@@ -48,29 +47,19 @@ def signup(request):
   return render(request, 'registration/signup.html', context)
 
 def explore(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
-
+  template = is_mobile(request)
+  
   fundrs = Fundraiser.objects.all()
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': fundrs })
+  serialized_fundrs = serializers.serialize('json', fundrs)
+  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
 def saved(request):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
+  
   return render(request, 'saved/index.html', { 'template' : template })
 
 def detail(request, fundr_id):
-  mobile = is_mobile(request)
-  if mobile:
-     template = 'base.html'
-  else:
-     template = 'base-desktop.html'
+  template = is_mobile(request)
 
   fundr = Fundraiser.objects.id(id=fundr_id)
   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })

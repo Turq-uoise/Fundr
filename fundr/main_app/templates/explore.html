@@ -3,21 +3,51 @@
 
 <h1>FUNDRS in your area!</h1>
 <hr>
-{% for fundr in fundrs %}
-  <div id="board">
-    <div class="card">
-      <span class="card-title h3 accent-clr">{{ fundr.name }}</span>
-      <div class="fundr-img"><img src="https://media.discordapp.net/attachments/754607431442628700/1120707301263806464/Fy_R4xTXgAEIUS_.png?width=579&height=473" class="img-fluid"></div>
-      <p>Bio: {{ fundr.bio }}</p>
-      {% if fundr.goal == fundr.current %}
-        <p>Fully Funded!</p>
-      {% else %}
-        <p>{{ fundr.current }} out of {{ fundr.goal }} funded!</p>
-      {% endif %}
-    </div>
+<h1>Fundraiser List</h1>
+<div id="board">
+  <div class="card">
+    <span class="card-title h3 accent-clr" id="fundr-name"></span>
+    <p id="fundr-bio"></p>
+    <p id="fundr-funded"></p>
+    <button id="next-button">Next</button>
   </div>
-{% endfor %}
+</div>
 
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let currentIndex = 0;
+    const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
+    const nextButton = document.getElementById("next-button");
+    const fundrName = document.getElementById("fundr-name");
+    const fundrBio = document.getElementById("fundr-bio");
+    const fundrFunded = document.getElementById("fundr-funded");
+    console.log(fundrBio, fundrName)
+    console.log(fundrs[currentIndex].fields.bio)
+
+    fundrName.innerText = fundrs[currentIndex].fields.name;
+    fundrBio.innerText = fundrs[currentIndex].fields.bio;
+    let currentFunded = fundrs[currentIndex].fields.current;
+    let goal = fundrs[currentIndex].fields.goal;
+    fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+
+
+    nextButton.addEventListener("click", function() {
+        currentIndex++;
+        console.log(currentIndex)
+        if (currentIndex < fundrs.length) {
+          let fundrObj = fundrs[currentIndex]
+          fundrName.innerText = fundrObj.fields.name;
+          fundrBio.innerText = fundrObj.fields.bio;
+          currentFunded = fundrs[currentIndex].fields.current;
+          goal = fundrs[currentIndex].fields.goal;
+          fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+            // Update other attributes of the next object as needed
+        }
+    });
+  });
+</script>
 
 
 {% endblock %}
