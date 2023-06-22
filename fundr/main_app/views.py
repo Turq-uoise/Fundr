@@ -107,4 +107,4 @@ class FundrCreate(CreateView):
 
       return context
 
-  return render(request, 'your_fundrs/new_fundr.html', { 'template' : template, })
+ 
