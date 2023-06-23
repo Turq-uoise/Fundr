@@ -14,6 +14,7 @@ from .helper import *
 import json
 import pgeocode
 import numpy as np
+import datetime
 
 # Create your views here.
 def home(request): 
@@ -82,13 +83,13 @@ def saved(request):
   return render(request, 'saved/index.html', { 'template' : template })
 
 
-def detail(request, fundr_id):
-  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
+# def detail(request, fundr_id):
+#   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
-  template = is_mobile(request)
+#   template = is_mobile(request)
 
-  fundr = Fundraiser.objects.id(id=fundr_id)
-  return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
+#   fundr = Fundraiser.objects.id(id=fundr_id)
+#   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
 
 
 def your_fundrs(request):
@@ -169,7 +170,8 @@ def fundrs_detail(request, fundr_id):
   post_form = PostForm()
 
   user = request.user
-  print(user.id)
+
+  fundr_posts = Post.objects.filter(fundraiser_id=fundr_id)
 
   return render(request, 'fundrs/detail.html', {
     'fundr': fundr,
@@ -177,10 +179,12 @@ def fundrs_detail(request, fundr_id):
     'placename': placename,
     'post_form': post_form,
     'user': user,
+    'posts': fundr_posts,
   })
 
 
 def add_post(request, fundr_id):
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   owner_id = int(request.POST['owner'])
   fundraiser_id = int(request.POST['fundraiser'])
   form = PostForm(request.POST)
@@ -188,7 +192,16 @@ def add_post(request, fundr_id):
       new_post = form.save(commit=False)
       new_post.owner_id = owner_id
       new_post.fundraiser_id = fundraiser_id
+      new_post.date_created = datetime.date.today
       new_post.save()
   else:
       print('form invalid')
   return redirect('detail', fundr_id=fundr_id)
+
+
+def delete_post(request, post_id, fundr_id):
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
+  post = Post.objects.get(pk=post_id)
+  post.delete()
+  return redirect('detail', fundr_id=fundr_id)
+
