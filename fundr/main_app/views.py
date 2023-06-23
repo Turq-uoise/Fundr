@@ -14,6 +14,7 @@ from django.core import serializers
 from .models import Fundraiser, Post, Profile
 from .helper import *
 import pgeocode
+import numpy as np
 
 
 # Create your views here.
@@ -57,7 +58,19 @@ def explore(request):
 
   template = is_mobile(request)
   
+  user = Profile.objects.get(user_id=request.user.id)
+  user_location = np.array([[user.latitude, user.longitude]])
   fundrs = Fundraiser.objects.all()
+  
+  for fundr in fundrs:
+    fundr_location = np.array([[fundr.lat, fundr.long]])
+    distance = pgeocode.haversine_distance(fundr_location, user_location)
+    floats = [float(np_float) for np_float in distance]
+    fundr.distance_from_user = floats[0]
+    fundr.save()
+
+  fundrs = Fundraiser.objects.all().order_by('distance_from_user')
+
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
