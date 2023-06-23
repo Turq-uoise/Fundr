@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils.translation import gettext_lazy as _
+import datetime
 
 # Create your models here.
 
@@ -65,7 +67,8 @@ class Post(models.Model):
     fundraiser = models.ForeignKey(Fundraiser, on_delete=models.CASCADE)
     image = models.URLField()
     title = models.CharField(max_length=100)
-    content = models.CharField(max_length=500)
+    content = models.CharField(max_length=2000)
+    date_created = models.DateField(_("Date"), default=datetime.date.today)
 
     def __str__(self):
         return self.content

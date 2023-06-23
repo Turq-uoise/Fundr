@@ -52,6 +52,32 @@
 
   {% endif %}
 
+  {% if posts.count %}
+
+    {% for post in posts.all %}
+      <div class="card mb-5" style="width: 90%;">
+        <img src="{{ post.image }}" class="card-img-top">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h4 class="card-title py-4">{{ post.title }}</h4>
+            <p class="card-title py-4">{{ fundr.owner }}</p>
+          </div>
+          <div class="d-flex py-2">
+            <p class="flex-grow-1 text-start fw-semibold">Posted:</p>
+            <p>{{ post.date_created }}</p>
+          </div>
+          <p class="card-text text-start">{{ post.content }}</p>
+        </div>
+        {% if user.id == fundr.owner_id %}
+        <div class="p-4">
+          <a href="{% url 'delete_post' post_id=post.id fundr_id=fundr.id %}" class="btn btn-danger px-4 float-end mt-4">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+  {% endif %}
+
 </div>
 
 {% endblock %}
