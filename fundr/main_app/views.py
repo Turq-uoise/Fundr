@@ -20,7 +20,19 @@ def home(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
-  return render(request, 'home.html', { 'template' : template })
+
+  posts = []
+  fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
+  print(fundrs)
+  for fundr in fundrs:
+    post_list = list(Post.objects.filter(fundraiser=fundr.id))
+    posts.append(post_list)
+
+  print(posts)
+  posts = [item for sublist in posts for item in sublist]
+  # sorted_list = sorted(posts, key=lambda x: x.date_created)
+
+  return render(request, 'home.html', { 'template' : template, "posts": posts })
 
 
 def login(request):
@@ -103,8 +115,8 @@ def your_fundrs(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
+
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
-  print(type(fundrs))
   return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
 

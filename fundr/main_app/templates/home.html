@@ -3,22 +3,22 @@
 
 
 <h1>Home</h1>
-<ul>
-    <li>
-        <a href="{% url 'login' %}">Login</a>
-    </li>
-    <li>
-        <a href="{% url 'logout' %}">Logout</a>
-    </li>
-    <li>
-        <a href="{% url 'signup' %}">Sign-up</a>
-    </li>
-</ul>
-
-{% if user.is_authenticated %}
-    <p>Authenticated - yes</p>
+{% if posts %}
+    {% for post in posts %}
+        {% if forloop.counter == 1%}
+            <div class="card mb-1 mt-6">
+        {% else %}
+            <div class="card my-5">
+                <h3>{{ post.fundraiser.name }}</h3>
+                <h3>{{ post.owner }}</h3>
+                <h3>{{ post.title }}</h3>
+                <h3>{{ post.content }}</h3>
+        {% endif %}
+            </div>
+    {% endfor %}
 {% else %}
-    <p>Authenticated - no</p>
+<h2>No posts to show, <br>go <a href="{% url 'explore' %}">explore</a> some fundrs!</h2>
+
 {% endif %}
 
 {% endblock %}
