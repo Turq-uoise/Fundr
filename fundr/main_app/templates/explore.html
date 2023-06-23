@@ -7,12 +7,27 @@
 <div id="board">
   <div class="card">
     <span class="card-title h3 accent-clr" id="fundr-name"></span>
+    <p id="fundr-distance"></p>
     <p id="fundr-bio"></p>
     <p id="fundr-funded"></p>
     {% if template == "base-desktop.html" %}
-      <button id="next-button">Next</button>
+    <div class="card" style="display:inline">
+      <form action="" method="POST">
+        {% csrf_token %}
+        <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
+        <input type="number" name="current_index" id="current_index" class="">
+        <button type="submit" style="margin-left: 20%;" class="btn" id="save-button" name="fundr_id" onclick="document.getElementById('next-button').click()">Save</button>
+      </form>
+    </div>
     {% else %}
-      <button id="next-button" style="width: 100vw; height: 100vh; border: none; outline: none; position: fixed; top: 0; left: 0; background: transparent"></button>
+    <div class="card" style="display:inline">
+      <form action="" method="POST">
+        {% csrf_token %}
+        <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
+        <button type="submit" style="margin-left: 20%;" class="btn"
+           id="save-button" name="fundr_id">Save</button>
+      </form>
+    </div>
     {% endif %}
   </div>
 </div>
@@ -20,16 +35,24 @@
 
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    let currentIndex = 0;
+  document.addEventListener("DOMContentLoaded", function () {
+
+    let currentIndex = "{{ current_index }}";
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
     const nextButton = document.getElementById("next-button");
+    const saveButton = document.getElementById("save-button");
+    const fundrEl = document.getElementById("fundr_id");
+    const indexEl = document.getElementById("current_index");
     const fundrName = document.getElementById("fundr-name");
+    const fundrDistance = document.getElementById("fundr-distance");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
 
     fundrName.innerText = fundrs[currentIndex].fields.name;
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
+    fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
+    saveButton.value = fundrs[currentIndex].pk;
+    indexEl.value = currentIndex;
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
     if (currentFunded == goal) {
@@ -40,28 +63,34 @@
     }
 
 
-    nextButton.addEventListener("click", function() {
-        currentIndex++;
-        if (currentIndex < fundrs.length) {
-          let fundrObj = fundrs[currentIndex]
-          fundrName.innerText = fundrObj.fields.name;
-          fundrBio.innerText = fundrObj.fields.bio;
-          currentFunded = fundrs[currentIndex].fields.current;
-          goal = fundrs[currentIndex].fields.goal;
+    nextButton.addEventListener("click", function () {
+      console.log('is calling on save')
+      currentIndex++;
+      if (currentIndex < fundrs.length) {
+        let fundrObj = fundrs[currentIndex]
+        fundrName.innerText = fundrObj.fields.name;
+        indexEl.value = currentIndex;
+        fundrBio.innerText = fundrObj.fields.bio;
+        fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
+        saveButton.value = fundrs[currentIndex - 1].pk
+        currentFunded = fundrs[currentIndex].fields.current;
+        goal = fundrs[currentIndex].fields.goal;
 
-          if (currentFunded == goal) {
-            fundrFunded.innerText = `Fully Funded: ${goal}!`;
-          } else {
-            fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
-          }
+        if (currentFunded == goal) {
+          fundrFunded.innerText = `Fully Funded: ${goal}!`;
+        } else {
+          fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
         }
-        else {
-          fundrName.innerText = "No more Fundrs to show!";
-          fundrBio.style.display = "none";
-          fundrFunded.style.display = "none";
-          nextButton.style.display = "none";
-        }
+      }
+      else {
+        fundrName.innerText = "No more Fundrs to show!";
+        fundrBio.style.display = "none";
+        fundrFunded.style.display = "none";
+        nextButton.style.display = "none";
+      }
     });
+
+
   });
 </script>
 

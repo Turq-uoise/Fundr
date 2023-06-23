@@ -54,10 +54,15 @@ def signup(request):
 
 def explore(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  
-
   template = is_mobile(request)
-  
+  if request.method == 'POST':
+    fundr_id = request.POST.get("fundr_id")
+    current_index = request.POST.get("current_index")
+    print(current_index)
+    Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
+  else: 
+    current_index = 0
+
   user = Profile.objects.get(user_id=request.user.id)
   user_location = np.array([[user.latitude, user.longitude]])
   fundrs = Fundraiser.objects.all()
@@ -69,10 +74,13 @@ def explore(request):
     fundr.distance_from_user = floats[0]
     fundr.save()
 
-  fundrs = Fundraiser.objects.all().order_by('distance_from_user')
+  fundrs = Fundraiser.objects.all().order_by('goal').order_by('name').order_by('distance_from_user')
+
+  for fundr in fundrs:
+    print(fundr.id)
 
   serialized_fundrs = serializers.serialize('json', fundrs)
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
+  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
 
 
 def saved(request):
