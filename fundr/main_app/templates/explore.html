@@ -11,11 +11,10 @@
     <p id="fundr-funded"></p>
     {% if template == "base-desktop.html" %}
       <div style="display:inline">
-        <button id="next-button" style="margin-right: 30%;">Next</button>
-        <button id="save-button"  style="margin-left: 30%;" onclick="document.getElementById('next-button').click()">Save</button>
-        <form action="{% url 'save_fundr' fundr.id user.id %}" method="POST">
+        <button id="next-button" style="margin-right: 20%;" class="btn">Next</button>
+        <form action="" method="POST">
           {% csrf_token %}
-          <button type="submit" class="btn" onclick="document.getElementById('next-button').click()">Save</button>
+          <button type="submit" style="margin-left: 20%;" class="btn" onclick="document.getElementById('next-button').click()" id="save-button" name="fundr_id">Save</button>
         </form>
       </div>
     {% else %}
@@ -32,12 +31,14 @@
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
     const nextButton = document.getElementById("next-button");
     const saveButton = document.getElementById("save-button");
+    const fundrEl = document.getElementById("fundr_id");
     const fundrName = document.getElementById("fundr-name");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
 
     fundrName.innerText = fundrs[currentIndex].fields.name;
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
+    saveButton.value = fundrs[currentIndex].pk
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
     if (currentFunded == goal) {
@@ -54,6 +55,7 @@
           let fundrObj = fundrs[currentIndex]
           fundrName.innerText = fundrObj.fields.name;
           fundrBio.innerText = fundrObj.fields.bio;
+          saveButton.value = fundrs[currentIndex-1].pk
           currentFunded = fundrs[currentIndex].fields.current;
           goal = fundrs[currentIndex].fields.goal;
 

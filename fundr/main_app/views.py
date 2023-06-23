@@ -53,25 +53,48 @@ def signup(request):
 
 def explore(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  
-
   template = is_mobile(request)
   
-  user = Profile.objects.get(user_id=request.user.id)
-  user_location = np.array([[user.latitude, user.longitude]])
-  fundrs = Fundraiser.objects.all()
+  if request.method == 'POST':
+    fundr_id = request.POST.get("fundr_id", "")
+
+    # currentIndex
+    print(fundr_id)
+    user = Profile.objects.get(user_id=request.user.id)
+    saved_fundrs = user.saved_fundrs
+    print(saved_fundrs)
+    if len(saved_fundrs) == 0:
+      fundr_list = [fundr_id]
+      json_fundrs = json.dumps(fundr_list)
+      user.saved_fundrs = json_fundrs
+      user.save()
+
+    else:
+      fundr_list = json.loads(saved_fundrs)
+      fundr_list.append(fundr_id)
+      json_fundrs = json.dumps(fundr_list)
+      user.saved_fundrs = json_fundrs
+      user.save()
+
+    return render(request, 'home.html', { 'template' : template })
   
-  for fundr in fundrs:
-    fundr_location = np.array([[fundr.lat, fundr.long]])
-    distance = pgeocode.haversine_distance(fundr_location, user_location)
-    floats = [float(np_float) for np_float in distance]
-    fundr.distance_from_user = floats[0]
-    fundr.save()
+  else:
+    
+    user = Profile.objects.get(user_id=request.user.id)
+    user_location = np.array([[user.latitude, user.longitude]])
+    fundrs = Fundraiser.objects.all()
+    
+    for fundr in fundrs:
+      fundr_location = np.array([[fundr.lat, fundr.long]])
+      distance = pgeocode.haversine_distance(fundr_location, user_location)
+      floats = [float(np_float) for np_float in distance]
+      fundr.distance_from_user = floats[0]
+      fundr.save()
 
-  fundrs = Fundraiser.objects.all().order_by('distance_from_user')
+    fundrs = Fundraiser.objects.all().order_by('distance_from_user')
 
-  serialized_fundrs = serializers.serialize('json', fundrs)
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
+    serialized_fundrs = serializers.serialize('json', fundrs)
+    return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
 
 def saved(request):
@@ -81,10 +104,6 @@ def saved(request):
   
   return render(request, 'saved/index.html', { 'template' : template })
 
-def save_fundr(request, cat_id, toy_id):
-  print(request)
-  Profile.objects.get(id=request.user.id).fundrs.add(request.fundr.id)
-  return redirect('detail', cat_id=cat_id)
 
 def detail(request, fundr_id):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')

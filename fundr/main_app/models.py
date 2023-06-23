@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.CharField(max_length=200)
+    saved_fundrs = models.CharField(default="")
     location = models.CharField(max_length=7, default="")
     latitude = models.FloatField(default=0.0, null=True)
     longitude = models.FloatField(default=0.0, null=True)
