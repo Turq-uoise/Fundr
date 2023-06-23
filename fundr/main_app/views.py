@@ -87,7 +87,7 @@ def your_fundrs(request):
   template = is_mobile(request)
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
   print(type(fundrs))
-  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
 def store_user_location(request):
   print(request.user)
@@ -121,7 +121,7 @@ class FundrCreate(CreateView):
   model = Fundraiser
   form_class= FundrForm
   success_url = '/your_fundrs'
-  template_name = 'your_fundrs/new_fundr.html'
+  template_name = 'fundrs/new_fundr.html'
   def get(self, request, *args, **kwargs):
     # Access the request object here
     # You can perform any necessary operations with the request
@@ -149,7 +149,19 @@ class FundrCreate(CreateView):
     form.instance.owner = self.request.user.profile
     return super().form_valid(form)
 
-
+def fundrs_detail(request, fundr_id):
+  template = is_mobile(request)
+  fundr = Fundraiser.objects.get(id=fundr_id)
+  nomi = pgeocode.Nominatim('gb')
+  post_code = formatPostcode(fundr.location).upper()
+  print(post_code)
+  placename = nomi.query_postal_code(post_code).place_name
+  print(placename)
+  return render(request, 'fundrs/detail.html', {
+    'fundr': fundr,
+    'template' : template,
+    'placename': placename,
+  })
 
 
   

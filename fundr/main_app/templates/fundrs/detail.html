@@ -1,0 +1,72 @@
+{% extends template %}
+{% load static %}
+{% block content %}
+
+<!-- <div class="card">
+  <div class="card-content">
+    <h2 class="card-title">{{ fundr.name }}</h2>
+    <p>Bio: </p>
+    <p>{{ fundr.bio }}</p>
+    <p>Description: </p>
+    <p>{{ fundr.description|linebreaks }}</p>
+    {% if fundr.goal == fundr.current %}
+      <p>Fully Funded!</p>
+    {% else %}
+      <p>{{ fundr.current }} left to reach the goal of {{ fundr.goal }}</p>
+    {% endif %}
+  </div>
+</div> -->
+
+<div class="container child-scroll">
+  <div class="card mb-5" style="width: 90%;">
+    <img src="{% static 'main_app/home_pic.png' %}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title py-2">{{ fundr.name }}</h5>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Goal:</p>
+        <p>£{{ fundr.current }} of</p>
+        <p class="ps-2">£{{ fundr.goal }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Near to:</p>
+        <p>{{ placename }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Owner</p>
+        <p>{{ fundr.owner }}</p>
+      </div>
+      <p class="card-text text-start">{{ fundr.bio }}</p>
+      <p class="card-text fs-6 text-start fw-semibold">Full description:</p>
+      <p class="card-text text-start">{{ fundr.description }}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+<!-- class Fundraiser(models.Model):
+    name = models.CharField(max_length = 100)
+    bio  = models.CharField(max_length = 280)
+    description = models.CharField(max_length = 1000)
+    goal = models.FloatField(
+        default=1000.0,
+        validators=[
+            MaxValueValidator(100000,0),
+            MinValueValidator(10.0)
+            ]
+        )
+    current = models.FloatField(
+        default=0.0,
+        validators=[
+            MinValueValidator(0.0)
+        ]
+        )
+    location = models.CharField(max_length=7,)
+    lat = models.FloatField(default=0.0)
+    long = models.FloatField(default=0.0)
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE) 
+    # deletes all fundraisers when owners account is deleted // poses some opportunities for would-be scammers -- future implementation should have an archive database that holds details of fundraisers and their owners (beyond scope given timeframe)
+
+    def __str__(self):
+        return self.name -->
