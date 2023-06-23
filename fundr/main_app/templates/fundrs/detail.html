@@ -30,22 +30,22 @@
 
   <div class="card mb-5" style="width: 90%;">
       <h5 class="card-title py-4">Add a post to this Fundr</h5>
-      <form class="d-flex flex-column align-items-center ms-3" style="width: 90%" action="{% url 'add_post' fundr.id %}" method="POST">
+      <form enctype="multipart/form-data" class="d-flex flex-column align-items-center ms-3" style="width: 90%" action="{% url 'add_post' fundr.id %}" method="POST">
         {% csrf_token %}
         <div class="mb-3 d-flex flex-column " style="width: 100%">
           <label for="id_title" class="align-self-start form-label">Post title:</label>
-          <input type="text" class="form-control" name="title" max-length="100" required id="id_title">
+          <input type="text" class="form-control" name="title" max-length="100" id="id_title">
         </div>
         <div class="mb-3 d-flex flex-column" style="width: 100%">
-          <label for="id_image" class="align-self-start form-label">Image URL:</label>
-          <input type="url" class="form-control" name="image" max-length="200" required id="id_image">
+          <label class="align-self-start form-label">Upload image:</label>
+          <input type="file" name="url" ></input>
         </div>
         <div class="mb-3 d-flex flex-column" style="width: 100%">
           <label for="id_content" class="align-self-start form-label">Post content:</label>
-          <input type="textarea" class="form-control" name="content" max-length="500" required id="id_content">
+          <input type="textarea" class="form-control" name="content" max-length="500" id="id_content">
         </div>
-        <input type="hidden" name="owner" required value="{{ fundr.owner_id }}"></input>
-        <input type="hidden" name="fundraiser" required value="{{ fundr.id }}"></input>
+        <input type="hidden" name="owner" value="{{ fundr.owner_id }}"></input>
+        <input type="hidden" name="fundraiser" value="{{ fundr.id }}"></input>
         <button type="submit" class="my-3 btn btn-primary align-self-center" value="Add Post">Add Post</button>
       </form>
   </div>
