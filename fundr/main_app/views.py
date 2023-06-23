@@ -57,24 +57,24 @@ def explore(request):
   
   if request.method == 'POST':
     fundr_id = request.POST.get("fundr_id", "")
+    Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
+    # # currentIndex
+    # print(fundr_id)
+    # user = Profile.objects.get(user_id=request.user.id)
+    # saved_fundrs = user.saved_fundrs
+    # print(saved_fundrs)
+    # if len(saved_fundrs) == 0:
+    #   fundr_list = [fundr_id]
+    #   json_fundrs = json.dumps(fundr_list)
+    #   user.saved_fundrs = json_fundrs
+    #   user.save()
 
-    # currentIndex
-    print(fundr_id)
-    user = Profile.objects.get(user_id=request.user.id)
-    saved_fundrs = user.saved_fundrs
-    print(saved_fundrs)
-    if len(saved_fundrs) == 0:
-      fundr_list = [fundr_id]
-      json_fundrs = json.dumps(fundr_list)
-      user.saved_fundrs = json_fundrs
-      user.save()
-
-    else:
-      fundr_list = json.loads(saved_fundrs)
-      fundr_list.append(fundr_id)
-      json_fundrs = json.dumps(fundr_list)
-      user.saved_fundrs = json_fundrs
-      user.save()
+    # else:
+    #   fundr_list = json.loads(saved_fundrs)
+    #   fundr_list.append(fundr_id)
+    #   json_fundrs = json.dumps(fundr_list)
+    #   user.saved_fundrs = json_fundrs
+    #   user.save()
 
     return redirect('explore')
   

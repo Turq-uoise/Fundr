@@ -10,7 +10,6 @@ from django.db.models.signals import post_save
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.CharField(max_length=200)
-    saved_fundrs = models.CharField(default="")
     #discarded_fundrs = models.CharField(default="")
     location = models.CharField(max_length=7, default="")
     latitude = models.FloatField(default=0.0, null=True)
@@ -53,6 +52,7 @@ class Fundraiser(models.Model):
     long = models.FloatField(default=0.0)
     distance_from_user = models.FloatField(default=0.0)
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE) 
+    followers = models.ManyToManyField(User)
     # deletes all fundraisers when owners account is deleted // poses some opportunities for would-be scammers -- future implementation should have an archive database that holds details of fundraisers and their owners (beyond scope given timeframe)
 
     def __str__(self):
