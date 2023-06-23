@@ -14,6 +14,7 @@ from django.core import serializers
 from .models import Fundraiser, Post, Profile
 from .helper import *
 import pgeocode
+import numpy as np
 
 
 # Create your views here.
@@ -57,7 +58,19 @@ def explore(request):
 
   template = is_mobile(request)
   
+  user = Profile.objects.get(user_id=request.user.id)
+  user_location = np.array([[user.latitude, user.longitude]])
   fundrs = Fundraiser.objects.all()
+  
+  for fundr in fundrs:
+    fundr_location = np.array([[fundr.lat, fundr.long]])
+    distance = pgeocode.haversine_distance(fundr_location, user_location)
+    floats = [float(np_float) for np_float in distance]
+    fundr.distance_from_user = floats[0]
+    fundr.save()
+
+  fundrs = Fundraiser.objects.all().order_by('distance_from_user')
+
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
@@ -87,7 +100,7 @@ def your_fundrs(request):
   template = is_mobile(request)
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
   print(type(fundrs))
-  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
 def store_user_location(request):
   print(request.user)
@@ -121,7 +134,7 @@ class FundrCreate(CreateView):
   model = Fundraiser
   form_class= FundrForm
   success_url = '/your_fundrs'
-  template_name = 'your_fundrs/new_fundr.html'
+  template_name = 'fundrs/new_fundr.html'
   def get(self, request, *args, **kwargs):
     # Access the request object here
     # You can perform any necessary operations with the request
@@ -149,7 +162,19 @@ class FundrCreate(CreateView):
     form.instance.owner = self.request.user.profile
     return super().form_valid(form)
 
-
+def fundrs_detail(request, fundr_id):
+  template = is_mobile(request)
+  fundr = Fundraiser.objects.get(id=fundr_id)
+  nomi = pgeocode.Nominatim('gb')
+  post_code = formatPostcode(fundr.location).upper()
+  print(post_code)
+  placename = nomi.query_postal_code(post_code).place_name
+  print(placename)
+  return render(request, 'fundrs/detail.html', {
+    'fundr': fundr,
+    'template' : template,
+    'placename': placename,
+  })
 
 
   

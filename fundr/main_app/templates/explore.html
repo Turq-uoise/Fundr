@@ -9,7 +9,11 @@
     <span class="card-title h3 accent-clr" id="fundr-name"></span>
     <p id="fundr-bio"></p>
     <p id="fundr-funded"></p>
-    <button id="next-button">Next</button>
+    {% if template == "base-desktop.html" %}
+      <button id="next-button">Next</button>
+    {% else %}
+      <button id="next-button" style="width: 100vw; height: 100vh; border: none; outline: none; position: fixed; top: 0; left: 0; background: transparent"></button>
+    {% endif %}
   </div>
 </div>
 
@@ -23,27 +27,39 @@
     const fundrName = document.getElementById("fundr-name");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
-    console.log(fundrBio, fundrName)
-    console.log(fundrs[currentIndex].fields.bio)
 
     fundrName.innerText = fundrs[currentIndex].fields.name;
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
-    fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+    if (currentFunded == goal) {
+      fundrFunded.innerText = `Fully Funded: ${goal}!`;
+    }
+    else {
+      fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+    }
 
 
     nextButton.addEventListener("click", function() {
         currentIndex++;
-        console.log(currentIndex)
         if (currentIndex < fundrs.length) {
           let fundrObj = fundrs[currentIndex]
           fundrName.innerText = fundrObj.fields.name;
           fundrBio.innerText = fundrObj.fields.bio;
           currentFunded = fundrs[currentIndex].fields.current;
           goal = fundrs[currentIndex].fields.goal;
-          fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
-            // Update other attributes of the next object as needed
+
+          if (currentFunded == goal) {
+            fundrFunded.innerText = `Fully Funded: ${goal}!`;
+          } else {
+            fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+          }
+        }
+        else {
+          fundrName.innerText = "No more Fundrs to show!";
+          fundrBio.style.display = "none";
+          fundrFunded.style.display = "none";
+          nextButton.style.display = "none";
         }
     });
   });
