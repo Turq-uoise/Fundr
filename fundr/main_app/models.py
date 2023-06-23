@@ -11,6 +11,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.CharField(max_length=200)
     location = models.CharField(max_length=7, default="")
+    latitude = models.FloatField(default=0.0, null=True)
+    longitude = models.FloatField(default=0.0, null=True)
 
     def __str__(self):
         return self.user.username
@@ -45,6 +47,8 @@ class Fundraiser(models.Model):
         ]
         )
     location = models.CharField(max_length=7,)
+    lat = models.FloatField(default=0.0)
+    long = models.FloatField(default=0.0)
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE) 
     # deletes all fundraisers when owners account is deleted // poses some opportunities for would-be scammers -- future implementation should have an archive database that holds details of fundraisers and their owners (beyond scope given timeframe)
 

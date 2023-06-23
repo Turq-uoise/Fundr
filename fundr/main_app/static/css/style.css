@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   --main-bg: white;
-  --header-clr: #0EB29A;
+  --header-clr: #005a4c;
   --post-bg: #F5FDFF;
   --accent-clr: #DDF0C2;
   --dark-grey: #8C999A; 
@@ -11,6 +11,11 @@
 html, body {
   margin: 0px;
   height: 100%;
+  font-family: 'Work Sans', sans-serif;
+}
+
+#FUNDR {
+  font-family: 'Lexend Peta', sans-serif;
 }
 
 .main-bg {
@@ -46,7 +51,7 @@ html, body {
 }
 
 .logo {
-  max-width: 10vmin;
+  max-width: 40px;
 }
 
 .nav_icon {
@@ -102,6 +107,52 @@ html, body {
   margin-top: 50%;
 }
 
+.parent-scroll{
+
+  overflow: hidden;
+  position: relative;
+}
+
+.child-scroll {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: -35px;
+  overflow-y: scroll;
+  padding-top: 10vmin;
+}
+.position-fixed{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+
+}
+.card-yourfundr{
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 18rem;
+}
+
+.row {
+  
+  justify-content: center;
+}
+.col{
+  justify-content: center;
+}
+.mt-6{
+  margin-top: 10vmin;
+}
+
+
+.card {
+  width: 2px;
+}
+
 @media only screen and (max-width: 600px){
   .mb-n0{
     margin-bottom: -50%;
@@ -109,4 +160,14 @@ html, body {
   .m-firstcard{
     margin-top: 75%;
   }
+
+  .position-fixed{
+    position: fixed;
+    top: 15vmin;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  
+  }
+
 }

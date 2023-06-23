@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'fundr.urls'
@@ -144,3 +146,8 @@ LOGGING = {
         "level": "WARNING",
     },
 }
+
+CORS_ALLOWED_ORIGINS = [
+    # Add your allowed origins here
+    'http://localhost:8000',  # Example: Allow requests from localhost
+]
