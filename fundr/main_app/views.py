@@ -159,13 +159,36 @@ class FundrCreate(CreateView):
 
 def fundrs_detail(request, fundr_id):
   template = is_mobile(request)
+
   fundr = Fundraiser.objects.get(id=fundr_id)
+
   nomi = pgeocode.Nominatim('gb')
   post_code = formatPostcode(fundr.location).upper()
   placename = nomi.query_postal_code(post_code).place_name
+
+  post_form = PostForm()
+
+  user = request.user
+  print(user.id)
+
   return render(request, 'fundrs/detail.html', {
     'fundr': fundr,
     'template' : template,
     'placename': placename,
+    'post_form': post_form,
+    'user': user,
   })
 
+
+def add_post(request, fundr_id):
+  owner_id = int(request.POST['owner'])
+  fundraiser_id = int(request.POST['fundraiser'])
+  form = PostForm(request.POST)
+  if form.is_valid():
+      new_post = form.save(commit=False)
+      new_post.owner_id = owner_id
+      new_post.fundraiser_id = fundraiser_id
+      new_post.save()
+  else:
+      print('form invalid')
+  return redirect('detail', fundr_id=fundr_id)
