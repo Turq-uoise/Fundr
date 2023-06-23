@@ -76,7 +76,7 @@ def explore(request):
       user.saved_fundrs = json_fundrs
       user.save()
 
-    return render(request, 'home.html', { 'template' : template })
+    return redirect('explore')
   
   else:
     
