@@ -82,6 +82,11 @@ def saved(request):
   
   return render(request, 'saved/index.html', { 'template' : template })
 
+def save_fundr(request, cat_id, toy_id):
+  print(request)
+  Profile.objects.get(id=request.user.id).fundrs.add(request.fundr.id)
+  return redirect('detail', cat_id=cat_id)
+
 def detail(request, fundr_id):
   if (request.user.is_authenticated != True):
     return redirect('/accounts/login/')

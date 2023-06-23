@@ -10,7 +10,14 @@
     <p id="fundr-bio"></p>
     <p id="fundr-funded"></p>
     {% if template == "base-desktop.html" %}
-      <button id="next-button">Next</button>
+      <div style="display:inline">
+        <button id="next-button" style="margin-right: 30%;">Next</button>
+        <button id="save-button"  style="margin-left: 30%;" onclick="document.getElementById('next-button').click()">Save</button>
+        <form action="{% url 'save_fundr' fundr.id user.id %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn" onclick="document.getElementById('next-button').click()">Save</button>
+        </form>
+      </div>
     {% else %}
       <button id="next-button" style="width: 100vw; height: 100vh; border: none; outline: none; position: fixed; top: 0; left: 0; background: transparent"></button>
     {% endif %}
@@ -24,6 +31,7 @@
     let currentIndex = 0;
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
     const nextButton = document.getElementById("next-button");
+    const saveButton = document.getElementById("save-button");
     const fundrName = document.getElementById("fundr-name");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
