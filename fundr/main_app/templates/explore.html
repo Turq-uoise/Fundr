@@ -7,16 +7,16 @@
 <div id="board">
   <div class="card">
     <span class="card-title h3 accent-clr" id="fundr-name"></span>
+    <p id="fundr-distance"></p>
     <p id="fundr-bio"></p>
     <p id="fundr-funded"></p>
     {% if template == "base-desktop.html" %}
     <div class="card" style="display:inline">
-      
       <form action="" method="POST">
-        <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
         {% csrf_token %}
-        <button type="submit" style="margin-left: 20%;" class="btn"
-           id="save-button" name="fundr_id">Save</button>
+        <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
+        <input type="number" name="current_index" id="current_index" class="">
+        <button type="submit" style="margin-left: 20%;" class="btn" id="save-button" name="fundr_id" onclick="document.getElementById('next-button').click()">Save</button>
       </form>
     </div>
     {% else %}
@@ -37,18 +37,22 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
-    let currentIndex = 0;
+    let currentIndex = "{{ current_index }}";
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
     const nextButton = document.getElementById("next-button");
     const saveButton = document.getElementById("save-button");
     const fundrEl = document.getElementById("fundr_id");
+    const indexEl = document.getElementById("current_index");
     const fundrName = document.getElementById("fundr-name");
+    const fundrDistance = document.getElementById("fundr-distance");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
 
     fundrName.innerText = fundrs[currentIndex].fields.name;
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
-    saveButton.value = fundrs[currentIndex].pk
+    fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
+    saveButton.value = fundrs[currentIndex].pk;
+    indexEl.value = currentIndex;
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
     if (currentFunded == goal) {
@@ -65,8 +69,10 @@
       if (currentIndex < fundrs.length) {
         let fundrObj = fundrs[currentIndex]
         fundrName.innerText = fundrObj.fields.name;
+        indexEl.value = currentIndex;
         fundrBio.innerText = fundrObj.fields.bio;
-        saveButton.value = fundrs[currentIndex].pk
+        fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
+        saveButton.value = fundrs[currentIndex - 1].pk
         currentFunded = fundrs[currentIndex].fields.current;
         goal = fundrs[currentIndex].fields.goal;
 
