@@ -1,0 +1,30 @@
+{% extends template %}
+{% load static %}
+{% block content %}
+
+<div class="container child-scroll">
+  <div class="card mb-5" style="width: 90%;">
+    <img src="{% static 'main_app/home_pic.png' %}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title py-2">{{ fundr.name }}</h5>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Goal:</p>
+        <p>£{{ fundr.current }} of</p>
+        <p class="ps-2">£{{ fundr.goal }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Near to:</p>
+        <p>{{ placename }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Owner</p>
+        <p>{{ fundr.owner }}</p>
+      </div>
+      <p class="card-text text-start">{{ fundr.bio }}</p>
+      <p class="card-text fs-6 text-start fw-semibold">Full description:</p>
+      <p class="card-text text-start">{{ fundr.description }}</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,32 +1,31 @@
 
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-import json
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import *
 from django.http import JsonResponse
-import json
 
-from django.core import serializers
+from .forms import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
+
+import json
 import pgeocode
 import numpy as np
 
-
 # Create your views here.
 def home(request): 
-  if (request.user.is_authenticated != True):
-    return redirect('/accounts/login/')
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
   return render(request, 'home.html', { 'template' : template })
 
+
 def login(request):
   return redirect('accounts/login/')
+
 
 def signup(request):
   error_message = ''
@@ -51,9 +50,9 @@ def signup(request):
 
   return render(request, 'registration/signup.html', context)
 
+
 def explore(request):
-  if (request.user.is_authenticated != True):
-    return redirect('/accounts/login/')
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
 
   template = is_mobile(request)
@@ -74,9 +73,9 @@ def explore(request):
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs) })
 
+
 def saved(request):
-  if (request.user.is_authenticated != True):
-    return redirect('/accounts/login/')
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
   
@@ -88,8 +87,7 @@ def save_fundr(request, cat_id, toy_id):
   return redirect('detail', cat_id=cat_id)
 
 def detail(request, fundr_id):
-  if (request.user.is_authenticated != True):
-    return redirect('/accounts/login/')
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
 
@@ -97,18 +95,16 @@ def detail(request, fundr_id):
   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
 
 
-
 def your_fundrs(request):
-  if (request.user.is_authenticated != True):
-    return redirect('/accounts/login/')
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
   print(type(fundrs))
-  return render(request, 'your_fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
+
 
 def store_user_location(request):
-  print(request.user)
   if request.method == 'POST':
     if request.user.is_authenticated:
       #Convert the raw HttpRequest body bytestring into a python dict:
@@ -124,22 +120,19 @@ def store_user_location(request):
       profile_to_update.latitude = latitude
       profile_to_update.longitude = longitude
       profile_to_update.save()
-      print('saved??')
       return JsonResponse({'message': 'Location stored successfully'})
     else:
-        print('User not authenticated')
         return JsonResponse({'error': 'User not authenticated'}, status=401)
   else:
-    print('Invalid request method')  
     return JsonResponse({'error': 'Invalid request method'})
 
+
 class FundrCreate(CreateView):
-  
-  
   model = Fundraiser
   form_class= FundrForm
   success_url = '/your_fundrs'
-  template_name = 'your_fundrs/new_fundr.html'
+  template_name = 'fundrs/new_fundr.html'
+
   def get(self, request, *args, **kwargs):
     # Access the request object here
     # You can perform any necessary operations with the request
@@ -168,6 +161,15 @@ class FundrCreate(CreateView):
     return super().form_valid(form)
 
 
+def fundrs_detail(request, fundr_id):
+  template = is_mobile(request)
+  fundr = Fundraiser.objects.get(id=fundr_id)
+  nomi = pgeocode.Nominatim('gb')
+  post_code = formatPostcode(fundr.location).upper()
+  placename = nomi.query_postal_code(post_code).place_name
+  return render(request, 'fundrs/detail.html', {
+    'fundr': fundr,
+    'template' : template,
+    'placename': placename,
+  })
 
-
-  
