@@ -3,35 +3,26 @@
 
 <h1>FUNDRS in your area!</h1>
 <hr>
-<h1>Fundraiser List</h1>
-<div id="board">
-  <div class="card">
-    <span class="card-title h3 accent-clr" id="fundr-name"></span>
-    <p id="fundr-distance"></p>
-    <p id="fundr-bio"></p>
-    <p id="fundr-funded"></p>
-    {% if template == "base-desktop.html" %}
-    <div class="card" style="display:inline">
+
+<div class="container child-scroll">
+  <div class="card my-5" style="width: 90%";>
+      <img class="card-img-top" id="fundr-img">
+      <div class="card-body">
+        <div>
+          <h5 class="card-title" id="fundr-name"></h5>
+          <p class="card-text" id="fundr-distance"></p>
+        </div>
+        <p class="card-title" id="fundr-bio"></p>
+        <p class="card-text" id="fundr-funded"></p>
+      </div>
       <form action="" method="POST">
         {% csrf_token %}
         <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
         <input type="number" name="current_index" id="current_index" class="d-none">
         <button type="submit" style="margin-left: 20%;" class="btn" id="save-button" name="fundr_id" onclick="document.getElementById('next-button').click()">Save</button>
       </form>
-    </div>
-    {% else %}
-    <div class="card" style="display:inline">
-      <form action="" method="POST">
-        {% csrf_token %}
-        <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
-        <button type="submit" style="margin-left: 20%;" class="btn"
-           id="save-button" name="fundr_id">Save</button>
-      </form>
-    </div>
-    {% endif %}
   </div>
 </div>
-
 
 
 <script>
@@ -39,39 +30,46 @@
 
     let currentIndex = "{{ current_index }}";
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
+
     const nextButton = document.getElementById("next-button");
     const saveButton = document.getElementById("save-button");
-    const fundrEl = document.getElementById("fundr_id");
     const indexEl = document.getElementById("current_index");
+
     const fundrName = document.getElementById("fundr-name");
     const fundrDistance = document.getElementById("fundr-distance");
     const fundrBio = document.getElementById("fundr-bio");
     const fundrFunded = document.getElementById("fundr-funded");
+    const fundrImg = document.getElementById("fundr-img");
 
     fundrName.innerText = fundrs[currentIndex].fields.name;
     fundrBio.innerText = fundrs[currentIndex].fields.bio;
-    fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
-    saveButton.value = fundrs[currentIndex].pk;
-    indexEl.value = currentIndex;
+    fundrDistance.innerText = `${fundrs[currentIndex].fields.distance_from_user}km away!`;
+    fundrImg.src = fundrs[currentIndex].fields.image;
+
     let currentFunded = fundrs[currentIndex].fields.current;
     let goal = fundrs[currentIndex].fields.goal;
     if (currentFunded == goal) {
       fundrFunded.innerText = `Fully Funded: ${goal}!`;
     }
     else {
-      fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+      fundrFunded.innerText = `£${currentFunded}/£${goal}`;
     }
 
+    saveButton.value = fundrs[currentIndex].pk;
+    indexEl.value = currentIndex;
 
     nextButton.addEventListener("click", function () {
       console.log('is calling on save')
       currentIndex++;
       if (currentIndex < fundrs.length) {
         let fundrObj = fundrs[currentIndex]
-        fundrName.innerText = fundrObj.fields.name;
         indexEl.value = currentIndex;
+
+        fundrName.innerText = fundrObj.fields.name;
         fundrBio.innerText = fundrObj.fields.bio;
-        fundrDistance.innerText = fundrs[currentIndex].fields.distance_from_user;
+        fundrDistance.innerText = `${fundrs[currentIndex].fields.distance_from_user}km away!`;
+        fundrImg.src = fundrs[currentIndex].fields.image;
+
         saveButton.value = fundrs[currentIndex - 1].pk
         currentFunded = fundrs[currentIndex].fields.current;
         goal = fundrs[currentIndex].fields.goal;
@@ -79,7 +77,7 @@
         if (currentFunded == goal) {
           fundrFunded.innerText = `Fully Funded: ${goal}!`;
         } else {
-          fundrFunded.innerText = `${currentFunded} funded out of ${goal}`;
+          fundrFunded.innerText = `£${currentFunded}/£${goal}`;
         }
       }
       else {
