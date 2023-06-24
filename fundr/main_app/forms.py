@@ -22,7 +22,7 @@ class FundrForm(ModelForm):
 
 class PostForm(forms.Form):
     title = forms.CharField(max_length=100)
-    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class': 'align-self-start form-label'}))
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 35, 'class': 'align-self-start form-label'}))
     image = forms.ImageField(required=False)
     owner = forms.IntegerField(required=True, widget=forms.HiddenInput())
     fundraiser = forms.IntegerField(required=True, widget=forms.HiddenInput())

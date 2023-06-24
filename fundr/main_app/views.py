@@ -40,10 +40,6 @@ def home(request):
   return render(request, 'home.html', { 'template' : template, 'posts': sorted_list })
 
 
-def login(request):
-  return redirect('accounts/login/')
-
-
 def signup(request):
   error_message = ''
   if request.method == 'POST':
@@ -96,14 +92,14 @@ def explore(request):
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
 
 
-def saved(request):
+def following(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
 
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   
-  return render(request, 'saved/index.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'following/index.html', { 'template' : template, 'fundrs': fundrs })
 
 
 def your_fundrs(request):
@@ -263,3 +259,26 @@ def delete_post(request, post_id, fundr_id):
   post.delete()
   return redirect('detail', fundr_id=fundr_id)
 
+
+def login(request):
+  return redirect('accounts/login/')
+
+
+def about(request):
+  template = is_mobile(request)
+  return render(request, 'about.html', { 'template' : template,})
+
+
+def settings(request):
+  template = is_mobile(request)
+  return render(request, 'settings.html', { 'template' : template,})
+
+
+def contact(request):
+  template = is_mobile(request)
+  return render(request, 'contact.html', { 'template' : template,})
+
+
+def terms(request):
+  template = is_mobile(request)
+  return render(request, 'terms.html', { 'template' : template,})

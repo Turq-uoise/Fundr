@@ -89,6 +89,10 @@ html, body {
   height: 20vmin;
 }
 
+.icon {
+  width: 1px;
+}
+
 .container-content{
   overflow-y: scroll  
 }
