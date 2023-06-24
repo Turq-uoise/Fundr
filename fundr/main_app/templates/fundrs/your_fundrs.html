@@ -6,25 +6,23 @@
 
 </div>
 <div class="container child-scroll">
-
-
-
-    {% for fundr in fundrs %}
-    {% if forloop.counter == 1%}
-    <div class="card mb-1 mt-6 " style="width: 90%";>
-    {% else %}
-    <div class="card my-5" style="width: 90%";>
-    {% endif %}
-      <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="card-img-top"
-        alt="Hollywood Sign on The Hill">
-      <div class="card-body">
-        <h5 class="card-title">{{ fundr.name }}</h5>
-        <p class="card-text">
-          £{{ fundr.current }}/£{{ fundr.goal }}
-        </p>
+  {% for fundr in fundrs %}
+    <a href="{% url 'detail' fundr.id %}" class="text-decoration-none">
+      {% if forloop.counter == 1%}
+      <div class="card mb-1 mt-6 " style="width: 90%";>
+      {% else %}
+      <div class="card my-5" style="width: 90%";>
+      {% endif %}
+        <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="card-img-top"
+          alt="Hollywood Sign on The Hill">
+        <div class="card-body">
+          <h5 class="card-title">{{ fundr.name }}</h5>
+          <p class="card-text">
+            £{{ fundr.current }}/£{{ fundr.goal }}
+          </p>
+        </div>
       </div>
-    </div>
-{% endfor %}
-  </div>
-
+    </a>
+  {% endfor %}
+</div>
 {% endblock %}

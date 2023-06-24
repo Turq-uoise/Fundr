@@ -24,12 +24,10 @@ def home(request):
 
   posts = []
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
-  print(fundrs)
   for fundr in fundrs:
     post_list = list(Post.objects.filter(fundraiser=fundr.id))
     posts.append(post_list)
 
-  print(posts)
   posts = [item for sublist in posts for item in sublist]
   # sorted_list = sorted(posts, key=lambda x: x.date_created)
 
@@ -55,7 +53,6 @@ def signup(request):
       return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
-      print(error_message)
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
   
@@ -70,7 +67,6 @@ def explore(request):
   if request.method == 'POST':
     fundr_id = request.POST.get("fundr_id")
     current_index = request.POST.get("current_index")
-    print(current_index)
     Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
   else: 
     current_index = 0
@@ -88,9 +84,6 @@ def explore(request):
 
   fundrs = Fundraiser.objects.all().order_by('goal').order_by('name').order_by('distance_from_user')
 
-  for fundr in fundrs:
-    print(fundr.id)
-
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
 
@@ -101,15 +94,6 @@ def saved(request):
   template = is_mobile(request)
   
   return render(request, 'saved/index.html', { 'template' : template })
-
-
-# def detail(request, fundr_id):
-#   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  
-#   template = is_mobile(request)
-
-#   fundr = Fundraiser.objects.id(id=fundr_id)
-#   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
 
 
 def your_fundrs(request):
@@ -181,7 +165,22 @@ class FundrCreate(CreateView):
 def fundrs_detail(request, fundr_id):
   template = is_mobile(request)
 
+  following = False
+
   fundr = Fundraiser.objects.get(id=fundr_id)
+
+  if (fundr.followers.filter(id=request.user.id).exists()):
+    following = True
+
+  if request.method == 'POST':
+    fundr_id = request.POST.get('fundr_id')
+    if following == True:
+      Fundraiser.objects.get(id=fundr_id).followers.remove(request.user)
+      following = False
+    else:
+      Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
+      following = True
+
 
   nomi = pgeocode.Nominatim('gb')
   post_code = formatPostcode(fundr.location).upper()
@@ -200,6 +199,7 @@ def fundrs_detail(request, fundr_id):
     'post_form': post_form,
     'user': user,
     'posts': fundr_posts,
+    'following': following,
   })
 
 

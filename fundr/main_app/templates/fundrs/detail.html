@@ -23,6 +23,16 @@
       <p class="card-text text-start">{{ fundr.bio }}</p>
       <p class="card-text fs-6 text-start fw-semibold">Full description:</p>
       <p class="card-text text-start">{{ fundr.description }}</p>
+      <form action="" method="POST">
+        {% csrf_token %}
+        <button type="submit" style="float:right" class="btn accent-clr" id="save-button" name="fundr_id" value="{{ fundr.id }}">
+          {% if following %}
+            UNSAVE
+          {% else %}
+            SAVE
+          {% endif %}
+        </button>
+      </form>
     </div>
   </div>
 
