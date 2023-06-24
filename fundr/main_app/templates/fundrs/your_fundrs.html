@@ -6,15 +6,12 @@
 
 </div>
 <div class="container child-scroll">
-
-
-
-    {% for fundr in fundrs %}
-    {% if forloop.counter == 1%}
+{% for fundr in fundrs %}
+  {% if forloop.counter == 1%}
     <div class="card mb-1 mt-6 " style="width: 90%";>
-    {% else %}
+  {% else %}
     <div class="card my-5" style="width: 90%";>
-    {% endif %}
+  {% endif %}
       <img src="{{ fundr.image }}" class="card-img-top">
       <div class="card-body">
         <h5 class="card-title">{{ fundr.name }}</h5>

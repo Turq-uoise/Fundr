@@ -98,8 +98,10 @@ def saved(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
+
+  fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   
-  return render(request, 'saved/index.html', { 'template' : template })
+  return render(request, 'saved/index.html', { 'template' : template, 'fundrs': fundrs })
 
 
 def your_fundrs(request):
