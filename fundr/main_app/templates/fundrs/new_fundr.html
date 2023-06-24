@@ -2,7 +2,7 @@
 {% block content %}
 
 <h1></h1>
-<form action="" method="post">
+<form action="" enctype="multipart/form-data" method="post">
   {% csrf_token %}
   <div class="mb-3">
     <label for="id_name" class="form-label">Name of Fundr</label>
@@ -25,6 +25,10 @@
   <div class="mb-3">
     <label for="id_location" class="form-label">Postcode</label>
     <input type="text" maxlength="7" name="location" class="form-control" required id="id_location">
+  </div>
+  <div class="mb-3">
+    <label for="id_image" class="form-label">Image</label>
+    <input type="file" name="image" accept="image/*" id="id_image">
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>

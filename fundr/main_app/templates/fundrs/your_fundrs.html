@@ -15,13 +15,14 @@
     {% else %}
     <div class="card my-5" style="width: 90%";>
     {% endif %}
-      <img src="https://mdbcdn.b-cdn.net/img/new/standard/city/041.webp" class="card-img-top"
-        alt="Hollywood Sign on The Hill">
+      <img src="{{ fundr.image }}" class="card-img-top">
       <div class="card-body">
         <h5 class="card-title">{{ fundr.name }}</h5>
+        <p class="card-title">{{ fundr.bio }}</p>
         <p class="card-text">
           £{{ fundr.current }}/£{{ fundr.goal }}
         </p>
+        <a href="{% url 'detail' fundr.id %}" class="btn btn-primary stretched-link">View fundr</a>
       </div>
     </div>
 {% endfor %}
