@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
@@ -159,12 +159,26 @@ class FundrCreate(CreateView):
     return context
   
   def form_valid(self, form):
-    # Access the user and add it to the model entry
     nomi = pgeocode.Nominatim('gb')
     post_code = formatPostcode(form.instance.location).upper()
     form.instance.lat = nomi.query_postal_code(post_code).latitude
     form.instance.long = nomi.query_postal_code(post_code).longitude
     form.instance.owner = self.request.user.profile
+    fundr_photo_file = self.request.FILES.get('image')
+    # print(self.request.FILES.get('image'))
+    # print(fundr_photo_file)
+    if fundr_photo_file:
+        # Upload the image to S3
+        print('inside if')
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + fundr_photo_file.name[fundr_photo_file.name.rfind('.'):]
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(fundr_photo_file, bucket, key)
+            image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+            form.instance.image = image_url
+        except Exception as e:
+            print('An error occurred uploading file to S3:', str(e))
     return super().form_valid(form)
 
 
