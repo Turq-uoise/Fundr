@@ -15,7 +15,7 @@
       <form action="" method="POST">
         {% csrf_token %}
         <button type="button" id="next-button" style="margin-right: 20%;" class="btn">Next</button>
-        <input type="number" name="current_index" id="current_index" class="">
+        <input type="number" name="current_index" id="current_index" class="d-none">
         <button type="submit" style="margin-left: 20%;" class="btn" id="save-button" name="fundr_id" onclick="document.getElementById('next-button').click()">Save</button>
       </form>
     </div>

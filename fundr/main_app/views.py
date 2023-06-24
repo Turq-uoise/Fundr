@@ -33,12 +33,11 @@ def home(request):
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   for fundr in fundrs:
     post_list = list(Post.objects.filter(fundraiser=fundr.id))
-    posts.append(post_list)
+    posts.extend(post_list)
 
-  posts = [item for sublist in posts for item in sublist]
-  # sorted_list = sorted(posts, key=lambda x: x.date_created)
+  sorted_list = sorted(posts, key=lambda x: x.date_created)
 
-  return render(request, 'home.html', { 'template' : template, "posts": posts })
+  return render(request, 'home.html', { 'template' : template, 'posts': sorted_list })
 
 
 def login(request):

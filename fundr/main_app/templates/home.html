@@ -1,24 +1,34 @@
 {% extends template %}
 {% block content %}
-
-
-<h1>Home</h1>
-{% if posts %}
+<div class="container child-scroll">
+{% if posts|length %}
     {% for post in posts %}
-        {% if forloop.counter == 1%}
-            <div class="card mb-1 mt-6">
-        {% else %}
-            <div class="card my-5">
-                <h3>{{ post.fundraiser.name }}</h3>
-                <h3>{{ post.owner }}</h3>
-                <h3>{{ post.title }}</h3>
-                <h3>{{ post.content }}</h3>
-        {% endif %}
+    <div class="card mb-5" style="width: 90%;">
+        <img src="{{ post.image }}" class="card-img-top">
+        <div class="card-body">
+            <a href="{% url 'detail' post.fundraiser.id %}" class="text-decoration-none"><p>{{ post.fundraiser.name }}</p></a>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <h4 class="card-title py-4">{{ post.title }}</h4>
+                <p class="card-title py-4 mt-1">{{ post.owner }}</p>
             </div>
+            <div class="d-flex py-2">
+                <p class="flex-grow-1 text-start fw-semibold">Posted:</p>
+                <p>{{ post.date_created }}</p>
+            </div>
+            <p class="card-text text-start">{{ post.content }}</p>
+        </div>
+        {% if user.id == post.fundraiser.owner_id %}
+            <div class="p-4 inline">
+                <a href="{% url 'delete_post' post_id=post.id fundr_id=post.fundraiser.id %}" class="btn btn-danger float-end ">Delete</a>
+            </div>
+        {% endif %}
+    </div>
     {% endfor %}
 {% else %}
+
 <h2>No posts to show, <br>go <a href="{% url 'explore' %}">explore</a> some fundrs!</h2>
 
 {% endif %}
-
+</div>
 {% endblock %}
