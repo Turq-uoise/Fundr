@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django import forms
 from .models import User, Profile, Fundraiser, Post
 
 class UserForm(ModelForm):
@@ -19,7 +20,9 @@ class FundrForm(ModelForm):
         fields = ('name', 'bio', 'description', 'goal', 'location')
 
 
-class PostForm(ModelForm):
-    class Meta:
-        model = Post
-        fields = ('title', 'image', 'content')
+class PostForm(forms.Form):
+    title = forms.CharField(max_length=100)
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 40, 'class': 'align-self-start form-label'}))
+    image = forms.ImageField(required=False)
+    owner = forms.IntegerField(required=True, widget=forms.HiddenInput())
+    fundraiser = forms.IntegerField(required=True, widget=forms.HiddenInput())

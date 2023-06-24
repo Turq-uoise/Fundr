@@ -65,7 +65,7 @@ class Fundraiser(models.Model):
 class Post(models.Model):
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
     fundraiser = models.ForeignKey(Fundraiser, on_delete=models.CASCADE)
-    image = models.URLField()
+    image = models.CharField(max_length=200, default="http://localhost:8000/static/main_app/home_pic.png")
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=2000)
     date_created = models.DateField(_("Date"), default=datetime.date.today)

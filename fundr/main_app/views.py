@@ -6,14 +6,21 @@ from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
 from django.http import JsonResponse
+from django import forms
+from django.core.files.uploadedfile import *
 
 from .forms import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
+from PIL import *
 
 import json
 import pgeocode
 import numpy as np
+import datetime
+import uuid
+import boto3
+import os
 import datetime
 
 # Create your views here.
@@ -205,17 +212,31 @@ def fundrs_detail(request, fundr_id):
 
 def add_post(request, fundr_id):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  owner_id = int(request.POST['owner'])
-  fundraiser_id = int(request.POST['fundraiser'])
+  # get the form:
   form = PostForm(request.POST)
+  # get the image:
+  post_photo_file = request.FILES.get('image', None)
+  # check form is valid:
   if form.is_valid():
-      new_post = form.save(commit=False)
-      new_post.owner_id = owner_id
-      new_post.fundraiser_id = fundraiser_id
-      new_post.date_created = datetime.date.today
-      new_post.save()
-  else:
-      print('form invalid')
+    # do the amazon s3 upload:
+    s3 = boto3.client('s3')
+    key = uuid.uuid4().hex[:6] + post_photo_file.name[post_photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(post_photo_file, bucket, key)
+      # this is the uploaded url of the image:
+      image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      # Create the new post object with the form data
+      new_post = Post.objects.create(
+          title=form.cleaned_data['title'],
+          content=form.cleaned_data['content'],
+          image=image_url,
+          owner_id=form.cleaned_data['owner'],
+          fundraiser_id=form.cleaned_data['fundraiser'],
+          date_created=datetime.date.today()
+        )
+    except:
+      print('An error occurred uploading file to S3')
   return redirect('detail', fundr_id=fundr_id)
 
 
