@@ -29,6 +29,24 @@
   {% if user.id == fundr.owner_id %}
 
   <div class="card mb-5" style="width: 90%;">
+    <h5 class="card-title py-4">Add a post to this Fundr</h5>
+    <form class="d-flex flex-column align-items-center ms-3" style="width: 90%" enctype="multipart/form-data" action="{% url 'add_post' fundr.id %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="owner" id="id_owner" value="{{ fundr.owner_id }}">
+      <input type="hidden" name="fundraiser" id="id_fundraiser" value="{{ fundr.id }}">
+      {% for field in post_form.visible_fields %}
+          <div class="mb-3 d-flex flex-column" style="width: 100%">
+              {{ field.errors }}
+              <label for="{{ field.id_for_label }}" class="align-self-start form-label">{{ field.label }}</label>
+              {{ field }}
+          </div>
+      {% endfor %}
+      <input type="submit" value="Submit" class="btn btn-primary">
+      <br>
+    </form>
+  </div>
+
+  <!-- <div class="card mb-5" style="width: 90%;">
       <h5 class="card-title py-4">Add a post to this Fundr</h5>
       <form enctype="multipart/form-data" class="d-flex flex-column align-items-center ms-3" style="width: 90%" action="{% url 'add_post' fundr.id %}" method="POST">
         {% csrf_token %}
@@ -48,7 +66,7 @@
         <input type="hidden" name="fundraiser" value="{{ fundr.id }}"></input>
         <button type="submit" class="my-3 btn btn-primary align-self-center" value="Add Post">Add Post</button>
       </form>
-  </div>
+  </div> -->
 
   {% endif %}
 
