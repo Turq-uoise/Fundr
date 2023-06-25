@@ -1,38 +1,54 @@
 {% extends template %}
 {% block content %}
-
+{% if object %}
+<h1></h1>
+{% endif %}
 <h2>Start a new Fundr</h2>
 <div class="mt-3 d-flex flex-column justify-content-start text-start">
   <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <div class="mb-3">
       <label for="id_name" class="form-label">Name of Fundr</label>
-      <input type="text" name="name" maxlength="100" required class="form-control" id="id_name" aria-describedby="emailHelp">
+      <input value="{% if object %}{{ object.name }}{% endif %}" type="text" name="name" maxlength="100" required
+        class="form-control" id="id_name" aria-describedby="emailHelp">
     </div>
     <div class="mb-3">
       <label for="id_bio" class="form-label">Bio</label>
-      <input type="text" maxlength="280" name="bio" required class="form-control" id="id_bio">
+      <input value="{% if object %}{{ object.bio }}{% endif %}" type="text" maxlength="280" name="bio" required
+        class="form-control" id="id_bio">
       <div id="emailHelp" class="form-text">Short bio to show on your explore card (max. 280ch)</div>
     </div>
     <div class="mb-3">
       <label for="id_description" class="form-label">Description</label>
-      <textarea type="text" maxlength="1000" name="description" required class="form-control description" id="id_description"></textarea>
+      <textarea type="text" maxlength="1000" name="description" required class="form-control description"
+        id="id_description">{% if object %}{{ object.description }}{% endif %}</textarea>
       <div id="emailHelp" class="form-text">Long description to be displayed on your Fundr page</div>
     </div>
     <div class="mb-3">
       <label for="id_goal" class="form-label">Goal</label>
-      <input type="number" name="goal" value="1000.0" max="100000.0" required class="form-control" id="id_goal">
+      <input value="{% if object %}{{ object.goal }}{% endif %}" type="number" name="goal" value="1000.0" max="100000.0"
+        required class="form-control" id="id_goal">
     </div>
     <div class="mb-3">
       <label for="id_location" class="form-label">Postcode</label>
-      <input type="text" maxlength="7" name="location" class="form-control" required id="id_location">
+      <input value="{% if object %}{{ object.location }}{% endif %}" type="text" maxlength="7" name="location"
+        class="form-control" required id="id_location">
     </div>
+    {% if object == False %}
     <div class="mb-3">
       <label for="id_image" class="form-label">Image</label>
       <input type="file" name="image" accept="image/*" id="id_image">
     </div>
+    {% endif %}
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }} error-msg" {% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
 </div>
 
 {% endblock %}

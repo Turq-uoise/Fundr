@@ -61,6 +61,8 @@ class Fundraiser(models.Model):
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+      return reverse('detail', kwargs={'fundr_id': self.id})
     
 
 class Post(models.Model):
@@ -73,6 +75,8 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content
+    
+    
     
 
 

@@ -8,6 +8,7 @@ from django.core import serializers
 from django.http import JsonResponse
 from django import forms
 from django.core.files.uploadedfile import *
+from django.contrib import messages
 
 from .forms import *
 from .models import Fundraiser, Post, Profile
@@ -22,6 +23,7 @@ import uuid
 import boto3
 import os
 import datetime
+from ukpostcodeutils import validation
 
 # Create your views here.
 def home(request): 
@@ -138,7 +140,7 @@ def store_user_location(request):
 class FundrCreate(CreateView):
   model = Fundraiser
   form_class= FundrForm
-  success_url = '/your_fundrs'
+  # success_url = '/your_fundrs'
   template_name = 'fundrs/new_fundr.html'
 
   def get(self, request, *args, **kwargs):
@@ -181,6 +183,66 @@ class FundrCreate(CreateView):
         except Exception as e:
             print('An error occurred uploading file to S3:', str(e))
     return super().form_valid(form)
+  
+
+class FundrUpdate(UpdateView):
+  model = Fundraiser
+  form_class = FundrForm
+  template_name = 'fundrs/new_fundr.html'
+
+  def get(self, request, *args, **kwargs):
+    # Access the request object here
+    # You can perform any necessary operations with the request
+    self.request = request
+    if (request.user.is_authenticated != True):
+      return redirect('/accounts/login/')
+    
+    f = Fundraiser.objects.get(id=kwargs.get('pk'))
+    if (self.request.user.profile != f.owner):
+      return redirect('/home')
+    
+    
+    # context = super().get_context_data(**kwargs)
+    # print(context)
+    
+    print(self.request.content_params)
+    
+    # Call the parent class's get() method to handle form-related logic
+    return super().get(request, *args, **kwargs)
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    
+    template = is_mobile(self.request)
+    context['template'] = template
+    # print(context)
+    # Access the request object through self.request here
+    # You can add additional context variables based on the request
+    return context
+
+  def form_valid(self, form):
+    post_code = form.instance.location.strip(' ')
+    print(post_code)
+    id = self.kwargs.get('pk')
+    if not validation.is_valid_postcode(post_code):
+      print('not a postcode')
+      messages.error(self.request, 'Not a valid postcode')
+      return redirect('/fundrs/{}/update'.format(id))
+    if form.instance.goal < 100 or form.instance.goal > 100000:
+      messages.error(self.request, 'Goals can be between £100 and £100,000')
+      return redirect('/fundrs/{}/update'.format(id))
+
+
+    # nomi = pgeocode.Nominatim('gb')
+    # print(nomi.query_postal_code(post_code))
+    # print('this should be nan', str((nomi.query_postal_code(post_code).accuracy)))
+    # if str((nomi.query_postal_code(post_code).accuracy)) == 'nan':
+    #   print('not a postcode')
+    #   return redirect('fundrs/{}/update'.format(id))
+
+    return super().form_valid(form)
+
+
 
 
 def fundrs_detail(request, fundr_id):
