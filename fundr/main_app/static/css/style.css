@@ -90,7 +90,7 @@ html, body {
 }
 
 .icon {
-  width: 1px;
+  width: 15px;
 }
 
 .container-content{
@@ -142,6 +142,19 @@ html, body {
 }
 .mt-6{
   margin-top: 10vmin;
+}
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #FF0000;
 }
 
 

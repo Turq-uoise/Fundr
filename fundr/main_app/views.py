@@ -84,9 +84,11 @@ def explore(request):
     fundr.distance_from_user = floats[0]
     fundr.save()
 
-  fundrs = Fundraiser.objects.all().order_by('bio').order_by('name').order_by('-goal').order_by('distance_from_user')
+  fundrs = Fundraiser.objects.order_by('distance_from_user','id','-goal')
+  ls = []
   for fundr in fundrs:
-    print(fundr.id)
+    ls.append(fundr.id)
+  print(ls)
 
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
