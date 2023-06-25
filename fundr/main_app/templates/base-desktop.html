@@ -59,53 +59,61 @@
 
   <div class="container d-flex flex-row justify-content-between text-center">
     
-      <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2  z-3">
+      <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2 z-3">
         <div class="d-flex align-items-center">
           <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
           <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h3" id="FUNDR">FUNDR</a></div>
         </div>
-        <div class="mt-4 d-flex">
-          <a href="{% url 'home' %}" class="mx-5 text-white text-decoration-none">HOME</a>
+        <div class="mt-4 d-flex ps-4">
+          <a href="{% url 'home' %}"><img class="icon" src="{% static 'main_app/home_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'home' %}" class="mx-3 text-white text-decoration-none">HOME</a>
         </div>
-        <div class="mt-2 d-flex">
-          <a href="{% url 'explore' %}" class="mx-5 text-white text-decoration-none">EXPLORE</a>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'explore' %}"><img class="icon" src="{% static 'main_app/explore_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'explore' %}" class="mx-3 text-white text-decoration-none">EXPLORE</a>
         </div>
-        <div class="mt-2 d-flex">
-          <a href="{% url 'index' %}" class="mx-5 text-white text-decoration-none">SAVED</a>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'following' %}"><img class="icon" src="{% static 'main_app/lists_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'following' %}" class="mx-3 text-white text-decoration-none">FOLLOWING</a>
+        </div>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'your_fundrs' %}"><img class="icon" src="{% static 'main_app/your_fundrs_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'your_fundrs' %}" class="mx-3 text-white text-decoration-none">YOUR FUNDRS</a>
         </div>
       </div>
 
       
-      <div class="col-md-6 light-grey parent-scroll">      
-        {% block content %}
-        {% endblock %}
+      <div class="col-md-6 px-3 py-3 light-grey parent-scroll">      
+        <div class="child-scroll d-flex flex-column ps-5" style="width: 90%">
+          {% block content %}
+          {% endblock %}
+        </div>
       </div>
       
 
 
-      <div class="col-md-3 d-flex flex-column header-clr pt-2 d-flex flex-column justify-content-between align-items-start text-white">
-        <ul class="d-flex align-items-start navbar-nav pe-3">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'your_fundrs' %}">YOUR FUNDRS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">USER SETTINGS</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">LOG OUT</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav pe-3 d-flex flex-column justify-content-end align-items-start">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Terms & Privacy</a>
-          </li>
-        </ul>
+      <div class="col-md-3 d-flex flex-column justify-content-between header-clr pt-2 z-3 text-white" style="width: 100%">
+        <div class="d-flex flex-column align-items-start mt-2 ps-4">
+          <div class="mt-2 d-flex ps-4">
+            <a href="{% url 'settings' %}"><img class="icon" src="{% static 'main_app/settings_icon_white.svg' %}" height="15px"></a>
+            <a href="{% url 'settings' %}" class="mx-3 text-white text-decoration-none">USER SETTINGS</a>
+          </div>
+          <div class="mt-2 d-flex ps-4">
+            <a href="#"><img class="icon" src="{% static 'main_app/logout_icon_white.svg' %}" height="15px">
+            <a class="mx-3 text-white text-decoration-none" href="{% url 'logout' %}">LOG OUT</a>
+          </div>
+        </div>
+        <div class="d-flex navbar-nav mb-5 ps-4">
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'about' %}">About</a>
+          </div>
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'contact' %}">Contact Us</a>
+          </div>
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'terms' %}">Terms & Privacy</a>
+          </div>
+        </div>
       </div>
     </div>
   

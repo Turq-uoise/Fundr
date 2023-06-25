@@ -1,19 +1,26 @@
 
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
 from django.http import JsonResponse
+from django import forms
+from django.core.files.uploadedfile import *
 
 from .forms import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
+from PIL import *
 
 import json
 import pgeocode
 import numpy as np
+import datetime
+import uuid
+import boto3
+import os
 import datetime
 
 # Create your views here.
@@ -21,11 +28,16 @@ def home(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
-  return render(request, 'home.html', { 'template' : template })
 
+  posts = []
+  fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
+  for fundr in fundrs:
+    post_list = list(Post.objects.filter(fundraiser=fundr.id))
+    posts.extend(post_list)
 
-def login(request):
-  return redirect('accounts/login/')
+  sorted_list = sorted(posts, key=lambda x: x.date_created)
+
+  return render(request, 'home.html', { 'template' : template, 'posts': sorted_list })
 
 
 def signup(request):
@@ -43,7 +55,6 @@ def signup(request):
       return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
-      print(error_message)
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
   
@@ -58,7 +69,6 @@ def explore(request):
   if request.method == 'POST':
     fundr_id = request.POST.get("fundr_id")
     current_index = request.POST.get("current_index")
-    print(current_index)
     Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
   else: 
     current_index = 0
@@ -74,8 +84,7 @@ def explore(request):
     fundr.distance_from_user = floats[0]
     fundr.save()
 
-  fundrs = Fundraiser.objects.all().order_by('goal').order_by('name').order_by('distance_from_user')
-
+  fundrs = Fundraiser.objects.all().order_by('bio').order_by('name').order_by('-goal').order_by('distance_from_user')
   for fundr in fundrs:
     print(fundr.id)
 
@@ -83,29 +92,21 @@ def explore(request):
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
 
 
-def saved(request):
+def following(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   template = is_mobile(request)
+
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   
-  return render(request, 'saved/index.html', { 'template' : template, 'fundrs': fundrs })
-
-
-# def detail(request, fundr_id):
-#   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  
-#   template = is_mobile(request)
-
-#   fundr = Fundraiser.objects.id(id=fundr_id)
-#   return render(request, 'detail.html', { 'template' : template, 'fundrs': fundr })
+  return render(request, 'following/index.html', { 'template' : template, 'fundrs': fundrs })
 
 
 def your_fundrs(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   
   template = is_mobile(request)
+
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
-  print(type(fundrs))
   return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
 
 
@@ -157,19 +158,48 @@ class FundrCreate(CreateView):
     return context
   
   def form_valid(self, form):
-    # Access the user and add it to the model entry
     nomi = pgeocode.Nominatim('gb')
     post_code = formatPostcode(form.instance.location).upper()
     form.instance.lat = nomi.query_postal_code(post_code).latitude
     form.instance.long = nomi.query_postal_code(post_code).longitude
     form.instance.owner = self.request.user.profile
+    fundr_photo_file = self.request.FILES.get('image')
+    # print(self.request.FILES.get('image'))
+    # print(fundr_photo_file)
+    if fundr_photo_file:
+        # Upload the image to S3
+        print('inside if')
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + fundr_photo_file.name[fundr_photo_file.name.rfind('.'):]
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(fundr_photo_file, bucket, key)
+            image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+            form.instance.image = image_url
+        except Exception as e:
+            print('An error occurred uploading file to S3:', str(e))
     return super().form_valid(form)
 
 
 def fundrs_detail(request, fundr_id):
   template = is_mobile(request)
 
+  following = False
+
   fundr = Fundraiser.objects.get(id=fundr_id)
+
+  if (fundr.followers.filter(id=request.user.id).exists()):
+    following = True
+
+  if request.method == 'POST':
+    fundr_id = request.POST.get('fundr_id')
+    if following == True:
+      Fundraiser.objects.get(id=fundr_id).followers.remove(request.user)
+      following = False
+    else:
+      Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
+      following = True
+
 
   nomi = pgeocode.Nominatim('gb')
   post_code = formatPostcode(fundr.location).upper()
@@ -188,22 +218,37 @@ def fundrs_detail(request, fundr_id):
     'post_form': post_form,
     'user': user,
     'posts': fundr_posts,
+    'following': following,
   })
 
 
 def add_post(request, fundr_id):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  owner_id = int(request.POST['owner'])
-  fundraiser_id = int(request.POST['fundraiser'])
+  # get the form:
   form = PostForm(request.POST)
+  # get the image:
+  post_photo_file = request.FILES.get('image', None)
+  # check form is valid:
   if form.is_valid():
-      new_post = form.save(commit=False)
-      new_post.owner_id = owner_id
-      new_post.fundraiser_id = fundraiser_id
-      new_post.date_created = datetime.date.today
-      new_post.save()
-  else:
-      print('form invalid')
+    # do the amazon s3 upload:
+    s3 = boto3.client('s3')
+    key = uuid.uuid4().hex[:6] + post_photo_file.name[post_photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(post_photo_file, bucket, key)
+      # this is the uploaded url of the image:
+      image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      # Create the new post object with the form data
+      new_post = Post.objects.create(
+          title=form.cleaned_data['title'],
+          content=form.cleaned_data['content'],
+          image=image_url,
+          owner_id=form.cleaned_data['owner'],
+          fundraiser_id=form.cleaned_data['fundraiser'],
+          date_created=datetime.date.today()
+        )
+    except:
+      print('An error occurred uploading file to S3')
   return redirect('detail', fundr_id=fundr_id)
 
 
@@ -213,3 +258,26 @@ def delete_post(request, post_id, fundr_id):
   post.delete()
   return redirect('detail', fundr_id=fundr_id)
 
+
+def login(request):
+  return redirect('accounts/login/')
+
+
+def about(request):
+  template = is_mobile(request)
+  return render(request, 'about.html', { 'template' : template,})
+
+
+def settings(request):
+  template = is_mobile(request)
+  return render(request, 'settings.html', { 'template' : template,})
+
+
+def contact(request):
+  template = is_mobile(request)
+  return render(request, 'contact.html', { 'template' : template,})
+
+
+def terms(request):
+  template = is_mobile(request)
+  return render(request, 'terms.html', { 'template' : template,})

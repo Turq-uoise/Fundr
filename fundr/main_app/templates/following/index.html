@@ -1,17 +1,14 @@
 {% extends template %}
 {% block content %}
-<div class="">
+<h1>Fundr's you're following</h1>
+<p></p>
 
-    <a class="btn btn-primary z-3 position-sticky" href="{% url 'new_fundr' %}">New Fundr</a>
-
-</div>
-<div class="container child-scroll">
-{% for fundr in fundrs %}
+  {% for fundr in fundrs %}
   {% if forloop.counter == 1%}
-    <div class="card mb-1 mt-6 " style="width: 90%";>
-  {% else %}
-    <div class="card my-5" style="width: 90%";>
-  {% endif %}
+    <div class="card ms-3 my-4" style="width: 95%";>
+    {% else %}
+    <div class="card ms-3 my-4" style="width: 95%";>
+    {% endif %}
       <img src="{{ fundr.image }}" class="card-img-top">
       <div class="card-body">
         <h5 class="card-title">{{ fundr.name }}</h5>
@@ -22,7 +19,6 @@
         <a href="{% url 'detail' fundr.id %}" class="btn btn-primary stretched-link">View fundr</a>
       </div>
     </div>
-{% endfor %}
-  </div>
+  {% endfor %}
 
 {% endblock %}
