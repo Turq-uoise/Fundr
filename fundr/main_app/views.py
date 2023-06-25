@@ -37,7 +37,7 @@ def home(request):
 
   sorted_list = sorted(posts, key=lambda x: x.date_created)
 
-  return render(request, 'home.html', { 'template' : template, 'posts': sorted_list })
+  return render(request, 'home.html', { 'template' : template, 'posts': sorted_list, 'title': 'Home' })
 
 
 def signup(request):
@@ -60,7 +60,7 @@ def signup(request):
   
   context = {'form': form, 'error_message': error_message}
 
-  return render(request, 'registration/signup.html', context)
+  return render(request, 'registration/signup.html', context, {'title': 'Sign-up'})
 
 
 def explore(request):
@@ -89,7 +89,7 @@ def explore(request):
     print(fundr.id)
 
   serialized_fundrs = serializers.serialize('json', fundrs)
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index })
+  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index, 'title': 'Explore' })
 
 
 def following(request):
@@ -98,7 +98,7 @@ def following(request):
 
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   
-  return render(request, 'following/index.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'following/index.html', { 'template' : template, 'fundrs': fundrs, 'title': 'Following' })
 
 
 def your_fundrs(request):
@@ -107,7 +107,7 @@ def your_fundrs(request):
   template = is_mobile(request)
 
   fundrs = Fundraiser.objects.filter(owner_id=request.user.id)
-  return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs })
+  return render(request, 'fundrs/your_fundrs.html', { 'template' : template, 'fundrs': fundrs, 'title': 'Your Fundrs' })
 
 
 def store_user_location(request):
@@ -219,6 +219,7 @@ def fundrs_detail(request, fundr_id):
     'user': user,
     'posts': fundr_posts,
     'following': following,
+    'title': 'Details',
   })
 
 
@@ -260,24 +261,24 @@ def delete_post(request, post_id, fundr_id):
 
 
 def login(request):
-  return redirect('accounts/login/')
+  return redirect('accounts/login/', {'title': 'Login'})
 
 
 def about(request):
   template = is_mobile(request)
-  return render(request, 'about.html', { 'template' : template,})
+  return render(request, 'about.html', { 'template' : template, 'title': 'About'})
 
 
 def settings(request):
   template = is_mobile(request)
-  return render(request, 'settings.html', { 'template' : template,})
+  return render(request, 'settings.html', { 'template' : template, 'title': 'Settings'})
 
 
 def contact(request):
   template = is_mobile(request)
-  return render(request, 'contact.html', { 'template' : template,})
+  return render(request, 'contact.html', { 'template' : template, 'title': 'Contact Us'})
 
 
 def terms(request):
   template = is_mobile(request)
-  return render(request, 'terms.html', { 'template' : template,})
+  return render(request, 'terms.html', { 'template' : template, 'title': 'Terms & Conditions and Privacy Policy'})
