@@ -11,6 +11,8 @@ from django import forms
 from django.core.files.uploadedfile import *
 from django.contrib import messages
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from .forms import *
 from .models import Fundraiser, Post, Profile
 from .helper import *
@@ -29,8 +31,9 @@ from ukpostcodeutils import validation
 # Create your views here.
 def home(request): 
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
-  
   template = is_mobile(request)
+
+  
 
   posts = []
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
@@ -40,8 +43,19 @@ def home(request):
 
   sorted_list = list(reversed(sorted(posts, key=lambda x: x.date_created)))
   # print(type(sorted_list))
+  page = request.GET.get('page', 1)
+  paginator = Paginator(sorted_list, 3)
 
-  return render(request, 'home.html', { 'template' : template, 'posts': sorted_list, 'title': 'Home' })
+  try:
+      posts = paginator.page(page)
+  except PageNotAnInteger:
+      posts  = paginator.page(1)
+  except EmptyPage:
+      posts = paginator.page(paginator.num_pages)
+
+
+
+  return render(request, 'home.html', { 'template' : template, 'posts': posts, 'title': 'Home' })
 
 
 def signup(request):
