@@ -83,12 +83,13 @@ def explore(request):
   
   for fundr in fundrs:
     fundr_location = np.array([[fundr.lat, fundr.long]])
-    distance = pgeocode.haversine_distance(fundr_location, user_location)
+    distance = np.round(pgeocode.haversine_distance(fundr_location, user_location),1)
     floats = [float(np_float) for np_float in distance]
     fundr.distance_from_user = floats[0]
     fundr.save()
-
-  fundrs = Fundraiser.objects.order_by('distance_from_user','id','-goal')
+  
+  fundrs = Fundraiser.objects.filter(distance_from_user__lte=user.catchment)
+  fundrs = fundrs.order_by('distance_from_user','id')
   ls = []
   for fundr in fundrs:
     ls.append(fundr.id)
