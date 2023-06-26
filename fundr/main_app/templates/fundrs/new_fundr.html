@@ -34,12 +34,12 @@
       <input value="{% if object %}{{ object.location }}{% endif %}" type="text" maxlength="7" name="location"
         class="form-control" required id="id_location">
     </div>
-    {% if object == False %}
+
     <div class="mb-3">
       <label for="id_image" class="form-label">Image</label>
-      <input type="file" name="image" accept="image/*" id="id_image">
+      <input value="{% if object %}{{ object.image }}{% endif %}" type="file" name="image" accept="image/*" id="id_image">
     </div>
-    {% endif %}
+
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
   {% if messages %}

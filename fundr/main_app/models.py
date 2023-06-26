@@ -16,6 +16,7 @@ class Profile(models.Model):
     location = models.CharField(max_length=7, default="")
     latitude = models.FloatField(default=0.0, null=True)
     longitude = models.FloatField(default=0.0, null=True)
+    catchment = models.FloatField(default=100)
 
     def __str__(self):
         return self.user.username

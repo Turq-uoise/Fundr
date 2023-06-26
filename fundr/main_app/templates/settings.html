@@ -2,5 +2,34 @@
 {% block content %}
 
 <h2>Settings</h2>
+<div class="slidecontainer">
+  <form action="{% url 'update_settings' user.profile.id %}" method="POST">
+    {% csrf_token %}
+  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange">
+  <div id="slider-value"></div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  
+</form>
+</div>
+{% if messages %}
+  <ul class="messages mt-3">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }} {{message.tags }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sliderEl = document.getElementById('myRange')
+    const valueEl = document.getElementById('slider-value')
+    valueEl.innerHTML = sliderEl.value + ' km'
+    sliderEl.oninput = function(){
+      valueEl.innerHTML = this.value + ' km'
+
+
+    }
+  })
+</script>
 
 {% endblock %}

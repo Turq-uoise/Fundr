@@ -1,8 +1,9 @@
 from django.contrib.auth.hashers import make_password, check_password
-from .models import User, Profile, Fundraiser
-import random
+from .models import User, Profile, Fundraiser, Post
+import random, datetime
 import pgeocode
 import string
+from lorem_text import lorem
 from .helper import formatPostcode
 
 
@@ -109,6 +110,40 @@ def get_random_user_fk():
     return random_item
 
 
+def generate_fundraiser_title():
+    adjectives = ['Amazing', 'Incredible', 'Fantastic', 'Extraordinary', 'Remarkable', 'Wonderful', 'Inspiring', 'Magical',
+                  'Heartwarming', 'Empowering', 'Impactful', 'Uplifting', 'Community-driven', 'Life-changing', 'Compassionate']
+    
+    nouns = ['Opportunity', 'Cause', 'Event', 'Mission', 'Effort', 'Campaign', 'Initiative', 'Drive', 'Fundraiser', 'Support',
+             'Project', 'Charity', 'Venture', 'Benefit', 'Aid', 'Society', 'Foundation']
+    
+    adjective = random.choice(adjectives)
+    noun = random.choice(nouns)
+    
+    # Generate a random number between 100 and 999
+    
+    title = f"{adjective} {noun}"
+    return title
+
+def generate_random_date(start_date, end_date):
+    # Convert the start and end dates to datetime objects
+    start_datetime = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+    end_datetime = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+
+    # Calculate the range of days between start and end dates
+    days_range = (end_datetime - start_datetime).days
+
+    # Generate a random number of days offset from the start date
+    random_offset = random.randint(0, days_range)
+
+    # Calculate the random date by adding the offset to the start date
+    random_date = start_datetime + datetime.timedelta(days=random_offset)
+
+    # Format the random date as a string in the 'YYYY-MM-DD' format
+    formatted_date = random_date.strftime('%Y-%m-%d')
+
+    return formatted_date
+
 
 # Generate the list of dictionaries
 def seedFunders():
@@ -122,16 +157,35 @@ def seedFunders():
     nomi = pgeocode.Nominatim('gb')
     lat = nomi.query_postal_code(formatPostcode(location)).latitude
     long = nomi.query_postal_code(formatPostcode(location)).longitude
+    image =  "https://picsum.photos/seed/{}/800?random=1".format(str(random.randint(1,2000)))
 
     # create fundraiser and save it to the model
-    f = Fundraiser(name=name, bio=bio, description=description, location=location, goal=goal, owner=owner, lat=lat, long=long)
+    f = Fundraiser(name=name, bio=bio, description=description, location=location, goal=goal, owner=owner, lat=lat, long=long, image=image)
     print(f)
     f.save()
+
+def seedPosts():
+    fundrs = Fundraiser.objects.all()
+    for fundr in fundrs:
+        owner = fundr.owner
+        fundraiser = fundr
+        for __ in range(random.randint(3,15)):
+            image = "https://picsum.photos/seed/{}/800?random=1".format(str(random.randint(1,2000)))
+            title = generate_fundraiser_title()
+            content = lorem.paragraph()
+            date_created = generate_random_date('2023-06-01', '2023-06-30')
+            post = Post(owner = owner, fundraiser = fundraiser, image = image, title = title, content = content,
+                        date_created= date_created)
+            post.save()
+
+
+        
 
 def seed():
     seedData()
     seedPostcode()
     seedFunders()
+    seedPosts()
     
 
 # run following code in shell:

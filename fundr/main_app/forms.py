@@ -17,7 +17,7 @@ class ProfileForm(ModelForm):
 class FundrForm(ModelForm):
     class Meta:
         model = Fundraiser
-        fields = ('name', 'bio', 'description', 'goal', 'location')
+        fields = ('name', 'bio', 'description', 'goal', 'location', 'image')
 
 
 class PostForm(forms.Form):
@@ -26,3 +26,9 @@ class PostForm(forms.Form):
     image = forms.ImageField(required=False)
     owner = forms.IntegerField(required=True, widget=forms.HiddenInput())
     fundraiser = forms.IntegerField(required=True, widget=forms.HiddenInput())
+
+
+class SettingsForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['catchment',]

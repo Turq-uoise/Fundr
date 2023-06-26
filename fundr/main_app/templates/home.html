@@ -1,9 +1,10 @@
 {% extends template %}
 {% block content %}
 <div class="container child-scroll">
+
 {% if posts|length %}
     {% for post in posts %}
-    <h2>Newsfeed</h2>
+    
     <div class="card ms-3 my-3" style="width: 95%;">
         <img src="{{ post.image }}" class="card-img-top">
         <div class="card-body">

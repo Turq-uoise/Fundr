@@ -9,7 +9,7 @@ urlpatterns = [
   path('about/', views.about, name='about'),
   path('contact/', views.contact, name='contact'),
   path('terms/', views.terms, name='terms'),
-  path('settings/', views.settings, name='settings'),
+  path('settings/', views.SettingsView.as_view(), name='settings'),
   path('fundrs/<int:fundr_id>', views.fundrs_detail, name='detail'),
   path('fundrs/<int:fundr_id>/add_post/', views.add_post, name='add_post'),
   path('accounts/signup/', views.signup, name='signup'),
@@ -18,4 +18,5 @@ urlpatterns = [
   path('fundrs/<int:pk>/update', views.FundrUpdate.as_view(), name='update_fundr'),
   path('userlocation/', views.store_user_location, name='store_user_location'),
   path('fundrs/<int:fundr_id>/posts/<int:post_id>', views.delete_post, name='delete_post'),
+  path('settings/update/<int:pk>', views.SettingsUpdate.as_view(), name='update_settings'),
 ]

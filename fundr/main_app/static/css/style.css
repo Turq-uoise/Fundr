@@ -159,7 +159,9 @@ html {
 .error{
   color: red;
 }
-
+.success{
+  color: green;
+}
 
 @media only screen and (max-width: 600px){
   .mb-n0{

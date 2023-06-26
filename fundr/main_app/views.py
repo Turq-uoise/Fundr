@@ -1,11 +1,12 @@
 
+from django.forms.models import BaseModelForm
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login as login_process
 from django.contrib.auth.forms import UserCreationForm
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django import forms
 from django.core.files.uploadedfile import *
 from django.contrib import messages
@@ -37,7 +38,8 @@ def home(request):
     post_list = list(Post.objects.filter(fundraiser=fundr.id))
     posts.extend(post_list)
 
-  sorted_list = sorted(posts, key=lambda x: x.date_created)
+  sorted_list = list(reversed(sorted(posts, key=lambda x: x.date_created)))
+  # print(type(sorted_list))
 
   return render(request, 'home.html', { 'template' : template, 'posts': sorted_list, 'title': 'Home' })
 
@@ -168,8 +170,16 @@ class FundrCreate(CreateView):
     form.instance.long = nomi.query_postal_code(post_code).longitude
     form.instance.owner = self.request.user.profile
     fundr_photo_file = self.request.FILES.get('image')
-    # print(self.request.FILES.get('image'))
-    # print(fundr_photo_file)
+    print(post_code.replace(' ', ''))
+    if not validation.is_valid_postcode(post_code.replace(' ', '')):
+      print('not a postcode')
+      messages.error(self.request, 'Not a valid postcode')
+      return redirect('/your_fundrs/new_fundr')
+    if form.instance.goal < 100 or form.instance.goal > 100000:
+      messages.error(self.request, 'Goals can be between £100 and £100,000')
+      return redirect('/your_fundrs/new_fundr')
+
+    print(fundr_photo_file)
     if fundr_photo_file:
         # Upload the image to S3
         print('inside if')
@@ -201,12 +211,6 @@ class FundrUpdate(UpdateView):
     if (self.request.user.profile != f.owner):
       return redirect('/home')
     
-    
-    # context = super().get_context_data(**kwargs)
-    # print(context)
-    
-    print(self.request.content_params)
-    
     # Call the parent class's get() method to handle form-related logic
     return super().get(request, *args, **kwargs)
 
@@ -215,7 +219,6 @@ class FundrUpdate(UpdateView):
     
     template = is_mobile(self.request)
     context['template'] = template
-    # print(context)
     # Access the request object through self.request here
     # You can add additional context variables based on the request
     return context
@@ -231,25 +234,16 @@ class FundrUpdate(UpdateView):
     if form.instance.goal < 100 or form.instance.goal > 100000:
       messages.error(self.request, 'Goals can be between £100 and £100,000')
       return redirect('/fundrs/{}/update'.format(id))
-
-
-    # nomi = pgeocode.Nominatim('gb')
-    # print(nomi.query_postal_code(post_code))
-    # print('this should be nan', str((nomi.query_postal_code(post_code).accuracy)))
-    # if str((nomi.query_postal_code(post_code).accuracy)) == 'nan':
-    #   print('not a postcode')
-    #   return redirect('fundrs/{}/update'.format(id))
-
+    
     return super().form_valid(form)
 
 
 
 
 def fundrs_detail(request, fundr_id):
+
   template = is_mobile(request)
-
   following = False
-
   fundr = Fundraiser.objects.get(id=fundr_id)
 
   if (fundr.followers.filter(id=request.user.id).exists()):
@@ -263,7 +257,6 @@ def fundrs_detail(request, fundr_id):
     else:
       Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
       following = True
-
 
   nomi = pgeocode.Nominatim('gb')
   post_code = formatPostcode(fundr.location).upper()
@@ -333,9 +326,7 @@ def about(request):
   return render(request, 'about.html', { 'template' : template, 'title': 'About'})
 
 
-def settings(request):
-  template = is_mobile(request)
-  return render(request, 'settings.html', { 'template' : template, 'title': 'Settings'})
+
 
 
 def contact(request):
@@ -346,3 +337,27 @@ def contact(request):
 def terms(request):
   template = is_mobile(request)
   return render(request, 'terms.html', { 'template' : template, 'title': 'Terms & Conditions and Privacy Policy'})
+
+
+class SettingsView(TemplateView):
+  template_name = 'settings.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    print(**kwargs)
+    template = is_mobile(self.request)
+    context['template'] = template
+    # Access the request object through self.request here
+    # You can add additional context variables based on the request
+    return context
+
+
+class SettingsUpdate(UpdateView):
+  model = Profile
+  form_class = SettingsForm
+  success_url = '/settings'
+
+  def form_valid(self, form):
+    messages.success(self.request, 'Your catchment range has been updated')
+    return super().form_valid(form)
+    
