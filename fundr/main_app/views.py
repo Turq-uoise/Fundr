@@ -205,6 +205,9 @@ class FundrCreate(CreateView):
         except Exception as e:
             print('An error occurred uploading file to S3:', str(e))
     return super().form_valid(form)
+
+
+
   
 
 class FundrUpdate(UpdateView):
@@ -361,7 +364,7 @@ class SettingsView(TemplateView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    print(**kwargs)
+    print(kwargs)
     template = is_mobile(self.request)
     context['template'] = template
     # Access the request object through self.request here
@@ -377,4 +380,86 @@ class SettingsUpdate(UpdateView):
   def form_valid(self, form):
     messages.success(self.request, 'Your catchment range has been updated')
     return super().form_valid(form)
+
+
+# class SettingsCreate(CreateView):
+#   model = Profile
+#   form_class = AvatarForm
+#   success_url = '/settings'
+#   template_name = 'settings/settings_update.html'
+
+#   def get(self, request, *args, **kwargs):
+#     self.request = request
+#     print(self.request)
+#     if (request.user.is_authenticated != True):
+#       return redirect('/accounts/login/')
+    
+#     # Call the parent class's get() method to handle form-related logic
+#     return super().get(request, *args, **kwargs)
+
+#   def get_context_data(self, **kwargs):
+#     context = super().get_context_data(**kwargs)
+#     print('is even fucking doing this??????')
+#     template = is_mobile(self.request)
+#     context['template'] = template
+    
+
+#     # Access the request object through self.request here
+#     # You can add additional context variables based on the request
+#     return context
+
+#   def form_valid(self, form):
+#     print('is in here')
+#     print(self.request.FILES)
+#     fundr_photo_file = self.request.FILES.get('avatar')
+#     print('this is photo',fundr_photo_file)
+#     if fundr_photo_file:
+#         # Upload the image to S3
+#         print('inside if')
+#         s3 = boto3.client('s3')
+#         key = uuid.uuid4().hex[:6] + fundr_photo_file.name[fundr_photo_file.name.rfind('.'):]
+#         try:
+#             bucket = os.environ['S3_BUCKET']
+#             s3.upload_fileobj(fundr_photo_file, bucket, key)
+#             image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+#             form.instance.avatar = image_url
+#         except Exception as e:
+#             print('An error occurred uploading file to S3:', str(e))
+    
+#     return super().form_valid(form)
+
+#   def form_invalid(self, form):
+#       print ('form is invalid')
+#       print(form.errors)
+#       return super().form_invalid(form)
+
+
+
+
+def add_avatar(request, fundr_id):
+  if (request.user.is_authenticated != True): return redirect('/accounts/login/')
+  # get the form:
+  
+  form = AvatarForm(request.POST)
+  # get the image:
+  post_photo_file = request.FILES.get('avatar', None)
+  # check form is valid:
+  if form.is_valid():
+    # do the amazon s3 upload:
+    s3 = boto3.client('s3')
+    key = uuid.uuid4().hex[:6] + post_photo_file.name[post_photo_file.name.rfind('.'):]
+    try:
+      bucket = os.environ['S3_BUCKET']
+      s3.upload_fileobj(post_photo_file, bucket, key)
+      # this is the uploaded url of the image:
+      image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+      # Create the new post object with the form data
+      new_post = Post.objects.create(
+          avatar=image_url
+        )
+    except:
+      print('An error occurred uploading file to S3')
+  return redirect('detail', fundr_id=fundr_id)
+
+
     

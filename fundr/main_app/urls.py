@@ -20,4 +20,5 @@ urlpatterns = [
   path('userlocation/', views.store_user_location, name='store_user_location'),
   path('fundrs/<int:fundr_id>/posts/<int:post_id>', views.delete_post, name='delete_post'),
   path('settings/update/<int:pk>', views.SettingsUpdate.as_view(), name='update_settings'),
+  path('settings/update/<int:user_id>', views.add_avatar, name='add_avatar'),
 ]

@@ -59,24 +59,24 @@
     });
 
   </script>
-  <header class="navbar-fixed justify-content-between d-flex align-items-center header-clr z-3 position-sticky ">
+  <header class="navbar-fixed sticky-top justify-content-between d-flex align-items-center header-clr z-3 position-sticky ">
     <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo"></div>
     <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h2" id="FUNDR">FUNDR</a></div>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
       <span class="m-2"><img src="{% static 'main_app/hamburger_icon_white.svg' %}" alt="Hamburger Menu" width="50px"></span>
     </button>
   </header>
-  <main class="container z-0 infinite-container ">
+  <main class="container z-0 infinite-container mb-5 ">
       {% block content %}
       {% endblock %}
   </main>
-  <nav class="navbar fixed-bottom dark-grey">
+  <footer class="navbar fixed-bottom dark-grey">
     <div class="dark-grey container-fluid justify-content-md-between d-flex">
       <a href="{% url 'home' %}"><img src="{% static 'main_app/home_icon_white.svg' %}" alt="Home Icon" width="50px"></a>
       <a href="{% url 'explore' %}"><img src="{% static 'main_app/explore_icon_white.svg' %}" alt="Explore Icon" width="50px"></a>
       <a href="{% url 'following' %}"><img src="{% static 'main_app/lists_icon_white.svg' %}" alt="List Icon" width="50px"></a>
     </div>
-  </nav>
+  </footer>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
     <div class="offcanvas-header">

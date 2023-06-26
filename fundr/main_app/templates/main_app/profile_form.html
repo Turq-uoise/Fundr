@@ -1,0 +1,17 @@
+{% extends template %}
+{% block content %}
+
+<h2>Upload Photo</h2>
+
+  <form action="{% url 'create_avatar' user.profile.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="id_image" class="form-label">Image</label>
+    <input value="" type="file" name="avatar" accept="image/*"
+      id="id_image">
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+  </form>
+
+
+{% endblock %}

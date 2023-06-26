@@ -1,28 +1,25 @@
 {% extends template %}
 {% block content %}
-<div class="">
 
-    <a class="btn btn-primary z-3 position-sticky" href="{% url 'new_fundr' %}">New Fundr</a>
 
-</div>
-<div class="container child-scroll">
+    <a class=" fixed-bottom btn btn-primary z-2" href="{% url 'new_fundr' %}">New Fundr</a> 
+
+
+
 {% for fundr in fundrs %}
-  {% if forloop.counter == 1%}
-    <div class="card mb-1 mt-6 " style="width: 90%";>
-  {% else %}
-    <div class="card my-5" style="width: 90%";>
-  {% endif %}
-      <img src="{{ fundr.image }}" class="card-img-top">
-      <div class="card-body">
-        <h5 class="card-title">{{ fundr.name }}</h5>
-        <p class="card-title">{{ fundr.bio }}</p>
-        <p class="card-text">
-          £{{ fundr.current }}/£{{ fundr.goal }}
-        </p>
-        <a href="{% url 'detail' fundr.id %}" class="btn btn-primary stretched-link">View fundr</a>
-      </div>
+  <div class="card ms-2 my-3 " style="width: 95%;">
+    <img src="{{ fundr.image }}" class="card-img-top">
+    <div class="card-body">
+      <a href="{% url 'detail' fundr.id %}" class="text-decoration-none">
+        <h3>{{ fundr.name }}</h3>
+      </a>
+      <p class="card-text text-start">£{{ fundr.current }}/£{{ fundr.goal }}</p>
     </div>
+    </div>
+
 {% endfor %}
-  </div>
+
 
 {% endblock %}
+
+

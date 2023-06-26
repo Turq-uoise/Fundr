@@ -11,6 +11,7 @@
   
 </form>
 </div>
+<a href="{% url 'add_avatar' user.profile.id %}" class="btn btn-warning">Upload Avatar</a>
 {% if messages %}
   <ul class="messages mt-3">
     {% for message in messages %}
@@ -33,3 +34,5 @@
 </script>
 
 {% endblock %}
+
+
