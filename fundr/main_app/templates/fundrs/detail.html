@@ -1,0 +1,126 @@
+{% extends template %}
+{% load static %}
+{% block content %}
+
+<div class="container child-scroll">
+  <h2>Your Fundr</h2>
+  <div class="card ms-3 mb-5" style="width: 95%;">
+    <img src="{{ fundr.image }}" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title py-2">{{ fundr.name }}</h5>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Goal:</p>
+        <p>£{{ fundr.current }} of</p>
+        <p class="ps-2">£{{ fundr.goal }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Near to:</p>
+        <p>{{ placename }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Owner</p>
+        <p>{{ fundr.owner }}</p>
+      </div>
+      <p class="card-text text-start">{{ fundr.bio }}</p>
+      <p class="card-text fs-6 text-start fw-semibold">Full description:</p>
+      <p class="card-text text-start">{{ fundr.description }}</p>
+      <form action="" method="POST">
+        {% csrf_token %}
+        <button type="submit" style="float:right" class="btn accent-clr" id="save-button" name="fundr_id"
+          value="{{ fundr.id }}">
+          {% if following %}
+          UNSAVE
+          {% else %}
+          SAVE
+          {% endif %}
+        </button>
+      </form>
+      {% if user.id == fundr.owner_id %}
+
+      <button type="button" style='float: left;' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        DELETE
+      </button>
+
+
+
+      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Are your sure you want to DELETE {{fundr.name}}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+              <form action="{% url 'delete_fundr' fundr.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style='float: left;' class="btn btn-danger " value="Delete Fundr">Confirm
+                  DELETE</button>
+
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      {% endif %}
+
+    </div>
+  </div>
+
+  {% if user.id == fundr.owner_id %}
+
+  <div class="card ms-3 mb-5" style="width: 95%;">
+    <h5 class="card-title py-4">Add a post to this Fundr</h5>
+    <form class="d-flex flex-column align-items-center ms-3" style="width: 90%" enctype="multipart/form-data"
+      action="{% url 'add_post' fundr.id %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="owner" id="id_owner" value="{{ fundr.owner_id }}">
+      <input type="hidden" name="fundraiser" id="id_fundraiser" value="{{ fundr.id }}">
+      {% for field in post_form.visible_fields %}
+      <div class="mb-3 d-flex flex-column" style="width: 95%">
+        {{ field.errors }}
+        <label for="{{ field.id_for_label }}" class="align-self-start form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <input type="submit" value="Submit" class="btn btn-primary">
+      <br>
+    </form>
+  </div>
+
+  {% endif %}
+
+  {% if posts.count %}
+
+  {% for post in posts.all %}
+  <div class="card ms-3 mb-5" style="width: 95%;">
+    <img src="{{ post.image }}" class="card-img-top">
+    <div class="card-body">
+      <div class="d-flex justify-content-between">
+        <h4 class="card-title py-4">{{ post.title }}</h4>
+        <p class="card-title py-4">{{ fundr.owner }}</p>
+      </div>
+      <div class="d-flex py-2">
+        <p class="flex-grow-1 text-start fw-semibold">Posted:</p>
+        <p>{{ post.date_created }}</p>
+      </div>
+      <p class="card-text text-start">{{ post.content }}</p>
+    </div>
+    {% if user.id == fundr.owner_id %}
+    <div class="p-4">
+      <a href="{% url 'delete_post' post_id=post.id fundr_id=fundr.id %}"
+        class="btn btn-danger px-4 float-end mt-4">Delete</a>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+</div>
+
+{% endblock %}

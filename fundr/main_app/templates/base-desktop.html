@@ -1,0 +1,122 @@
+
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundr - {{ title }}</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'main_app/fundr_icon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Peta:wght@700&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="header-clr d-flex justify-content-center">
+  {% csrf_token %}
+  <script>
+    
+    async function constructURL(lat, lon) {
+      let baseURL = 'http://localhost:8000'
+      let endpoint = '/userlocation/'
+      let queryParameters = `?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}/`;
+      let url = baseURL + endpoint + queryParameters
+      try {
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Required by django:  CRSF token 
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify({
+            userlat: lat,
+            userlon: lon,
+          })
+        })
+      } catch {
+        console.log('error');
+      }
+    }
+
+    // Function to retrieve the CSRF token from the cookies
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Use inbuilt geolocation in modern browsers:
+    navigator.geolocation.getCurrentPosition((position) => {
+      constructURL(position.coords.latitude, position.coords.longitude);
+    });
+
+  </script>
+
+  <div class="container d-flex flex-row justify-content-between text-center">
+    
+      <div class="col-md-3 d-flex flex-column align-items-start header-clr pt-2 z-3">
+        <div class="d-flex align-items-center">
+          <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo" width="100px"></div>
+          <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h3" id="FUNDR">FUNDR</a></div>
+        </div>
+        <div class="mt-4 d-flex ps-4">
+          <a href="{% url 'home' %}"><img class="icon" src="{% static 'main_app/home_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'home' %}" class="mx-3 text-white text-decoration-none">HOME</a>
+        </div>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'explore' %}"><img class="icon" src="{% static 'main_app/explore_icon_white.svg' %}" height="15px"></a>
+          <a href="{% url 'explore' %}" class="mx-3 text-white text-decoration-none">EXPLORE</a>
+        </div>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'following' %}"><img class="icon" src="{% static 'main_app/lists_icon_white.svg' %}" height="15px" width="15px"></a>
+          <a href="{% url 'following' %}" class="mx-3 text-white text-decoration-none">FOLLOWING</a>
+        </div>
+        <div class="mt-2 d-flex ps-4">
+          <a href="{% url 'your_fundrs' %}"><img class="icon" src="{% static 'main_app/your_fundrs_icon_white.svg' %}" height="15px" width="15px"></a>
+          <a href="{% url 'your_fundrs' %}" class="mx-3 text-white text-decoration-none">YOUR FUNDRS</a>
+        </div>
+      </div>
+
+      
+      <div class="col-md-6 px-3 py-3 light-grey parent-scroll">      
+        <div class="child-scroll d-flex flex-column ps-5" style="width: 90%">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </div>
+      
+
+
+      <div class="col-md-3 d-flex flex-column justify-content-between header-clr pt-2 z-3 text-white" style="width: 100%">
+        <div class="d-flex flex-column align-items-start mt-2 ps-4">
+          <div class="mt-2 d-flex ps-4">
+            <a href="{% url 'settings' %}"><img class="icon" src="{% static 'main_app/settings_icon_white.svg' %}" height="15px"></a>
+            <a href="{% url 'settings' %}" class="mx-3 text-white text-decoration-none">USER SETTINGS</a>
+          </div>
+          <div class="mt-2 d-flex ps-4">
+            <a href="#"><img class="icon" src="{% static 'main_app/logout_icon_white.svg' %}" height="15px">
+            <a class="mx-3 text-white text-decoration-none" href="{% url 'logout' %}">LOG OUT</a>
+          </div>
+        </div>
+        <div class="d-flex navbar-nav mb-5 ps-4">
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'about' %}">About</a>
+          </div>
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'contact' %}">Contact Us</a>
+          </div>
+          <div class="mt-2 d-flex">
+            <a class="mx-4 text-white text-decoration-none" href="{% url 'terms' %}">Terms & Privacy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+</body>
+</html>

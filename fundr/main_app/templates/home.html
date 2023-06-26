@@ -1,0 +1,36 @@
+{% extends template %}
+{% block content %}
+<div class="container child-scroll">
+
+{% if posts|length %}
+    {% for post in posts %}
+    
+    <div class="card ms-3 my-3" style="width: 95%;">
+        <img src="{{ post.image }}" class="card-img-top">
+        <div class="card-body">
+            <a href="{% url 'detail' post.fundraiser.id %}" class="text-decoration-none"><p>{{ post.fundraiser.name }}</p></a>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <h4 class="card-title py-4">{{ post.title }}</h4>
+                <p class="card-title py-4 mt-1">{{ post.owner }}</p>
+            </div>
+            <div class="d-flex py-2">
+                <p class="flex-grow-1 text-start fw-semibold">Posted:</p>
+                <p>{{ post.date_created }}</p>
+            </div>
+            <p class="card-text text-start">{{ post.content }}</p>
+        </div>
+        {% if user.id == post.fundraiser.owner_id %}
+            <div class="p-4 inline">
+                <a href="{% url 'delete_post' post_id=post.id fundr_id=post.fundraiser.id %}" class="btn btn-danger float-end ">Delete</a>
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+
+<h2>No posts to show, <br>go <a href="{% url 'explore' %}">explore</a> some fundrs!</h2>
+
+{% endif %}
+</div>
+{% endblock %}
