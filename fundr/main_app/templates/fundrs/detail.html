@@ -26,14 +26,49 @@
       <p class="card-text text-start">{{ fundr.description }}</p>
       <form action="" method="POST">
         {% csrf_token %}
-        <button type="submit" style="float:right" class="btn accent-clr" id="save-button" name="fundr_id" value="{{ fundr.id }}">
+        <button type="submit" style="float:right" class="btn accent-clr" id="save-button" name="fundr_id"
+          value="{{ fundr.id }}">
           {% if following %}
-            UNSAVE
+          UNSAVE
           {% else %}
-            SAVE
+          SAVE
           {% endif %}
         </button>
       </form>
+      {% if user.id == fundr.owner_id %}
+
+      <button type="button" style='float: left;' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        DELETE
+      </button>
+
+
+
+      <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Are your sure you want to DELETE {{fundr.name}}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+              <form action="{% url 'delete_fundr' fundr.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style='float: left;' class="btn btn-danger " value="Delete Fundr">Confirm
+                  DELETE</button>
+
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      {% endif %}
+
     </div>
   </div>
 
@@ -41,16 +76,17 @@
 
   <div class="card ms-3 mb-5" style="width: 95%;">
     <h5 class="card-title py-4">Add a post to this Fundr</h5>
-    <form class="d-flex flex-column align-items-center ms-3" style="width: 90%" enctype="multipart/form-data" action="{% url 'add_post' fundr.id %}" method="post">
+    <form class="d-flex flex-column align-items-center ms-3" style="width: 90%" enctype="multipart/form-data"
+      action="{% url 'add_post' fundr.id %}" method="post">
       {% csrf_token %}
       <input type="hidden" name="owner" id="id_owner" value="{{ fundr.owner_id }}">
       <input type="hidden" name="fundraiser" id="id_fundraiser" value="{{ fundr.id }}">
       {% for field in post_form.visible_fields %}
-          <div class="mb-3 d-flex flex-column" style="width: 95%">
-              {{ field.errors }}
-              <label for="{{ field.id_for_label }}" class="align-self-start form-label">{{ field.label }}</label>
-              {{ field }}
-          </div>
+      <div class="mb-3 d-flex flex-column" style="width: 95%">
+        {{ field.errors }}
+        <label for="{{ field.id_for_label }}" class="align-self-start form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
       {% endfor %}
       <input type="submit" value="Submit" class="btn btn-primary">
       <br>
@@ -77,7 +113,8 @@
     </div>
     {% if user.id == fundr.owner_id %}
     <div class="p-4">
-      <a href="{% url 'delete_post' post_id=post.id fundr_id=fundr.id %}" class="btn btn-danger px-4 float-end mt-4">Delete</a>
+      <a href="{% url 'delete_post' post_id=post.id fundr_id=fundr.id %}"
+        class="btn btn-danger px-4 float-end mt-4">Delete</a>
     </div>
     {% endif %}
   </div>
