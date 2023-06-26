@@ -28,7 +28,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
-    let currentIndex = "{{ current_index }}";
+    let currentIndex = {{current_index}};
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
 
     const nextButton = document.getElementById("next-button");
