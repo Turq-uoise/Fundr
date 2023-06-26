@@ -30,7 +30,7 @@
 
 
     async function constructURL(lat, lon) {
-      let baseURL = 'http://localhost:8000'
+      let baseURL = 'https://fundr.fly.dev'
       let endpoint = '/userlocation/'
       let queryParameters = `?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}/`;
       let url = baseURL + endpoint + queryParameters

@@ -76,9 +76,9 @@ def signup(request):
   # A bad POST or a GET request, so render signup.html with an empty form
   form = UserCreationForm()
   
-  context = {'form': form, 'error_message': error_message}
+  context = {'form': form, 'error_message': error_message, 'title': 'Sign-up'}
 
-  return render(request, 'registration/signup.html', context, {'title': 'Sign-up'})
+  return render(request, 'registration/signup.html', context)
 
 
 def explore(request):
