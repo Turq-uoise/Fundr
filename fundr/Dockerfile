@@ -7,20 +7,15 @@ ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /code
 
-
-WORKDIR /code/
-
-COPY . /code/
+WORKDIR /code
 
 COPY requirements.txt /tmp/requirements.txt
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+COPY . /code
 
-COPY requirements.txt /tmp/requirements.txt
-
-ENV SECRET_KEY "8BhFgqrbhOjSWbLJOrucOmk61VUnjFJslqp31IB7lHuO278bYQ"
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000

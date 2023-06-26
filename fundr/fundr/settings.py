@@ -15,13 +15,11 @@ from django.core.management.utils import get_random_secret_key
 import environ
 import os
 
+env = environ.Env()
+environ.Env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -32,9 +30,9 @@ SECRET_KEY = env('SECRET_KEY', default=get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'fundr.fly.dev']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.fly.dev']
 
-CSRF_TRUSTED_ORIGINS = ['https://fundr.fly.dev']
+CSRF_TRUSTED_ORIGINS = ['https://*.fly.dev']
 
 # Application definition
 
@@ -89,14 +87,15 @@ WSGI_APPLICATION = 'fundr.wsgi.application'
 # To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': 'ep-morning-heart-773376.eu-central-1.aws.neon.tech',
-        'PORT': '5432',
-    }
+    'default': env.db()
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': env('DATABASE_NAME'),
+    #     'USER': env('DATABASE_USER'),
+    #     'PASSWORD': env('DATABASE_PASSWORD'),
+    #     'HOST': 'ep-morning-heart-773376.eu-central-1.aws.neon.tech',
+    #     'PORT': '5432',
+    # }
 }
 
 
