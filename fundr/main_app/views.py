@@ -90,10 +90,7 @@ def explore(request):
   
   fundrs = Fundraiser.objects.filter(distance_from_user__lte=user.catchment)
   fundrs = fundrs.order_by('distance_from_user','id')
-  ls = []
-  for fundr in fundrs:
-    ls.append(fundr.id)
-  print(ls)
+  
 
   serialized_fundrs = serializers.serialize('json', fundrs)
   return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index, 'title': 'Explore' })
@@ -237,6 +234,11 @@ class FundrUpdate(UpdateView):
       return redirect('/fundrs/{}/update'.format(id))
     
     return super().form_valid(form)
+  
+class FundrDelete(DeleteView):
+  model = Fundraiser
+  success_url = '/your_fundrs/'
+
 
 
 def fundrs_detail(request, fundr_id):

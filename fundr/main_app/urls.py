@@ -16,6 +16,7 @@ urlpatterns = [
   path('your_fundrs/', views.your_fundrs, name='your_fundrs'),
   path('your_fundrs/new_fundr', views.FundrCreate.as_view(), name='new_fundr'),
   path('fundrs/<int:pk>/update', views.FundrUpdate.as_view(), name='update_fundr'),
+  path('fundrs/<int:pk>/delete', views.FundrDelete.as_view(), name='delete_fundr'),
   path('userlocation/', views.store_user_location, name='store_user_location'),
   path('fundrs/<int:fundr_id>/posts/<int:post_id>', views.delete_post, name='delete_post'),
   path('settings/update/<int:pk>', views.SettingsUpdate.as_view(), name='update_settings'),
