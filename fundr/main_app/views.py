@@ -33,8 +33,8 @@ def home(request):
   if (request.user.is_authenticated != True): return redirect('/accounts/login/')
   template = is_mobile(request)
 
+  user = request.user
   
-
   posts = []
   fundrs = User.objects.get(id=request.user.id).fundraiser_set.all()
   for fundr in fundrs:
@@ -55,7 +55,7 @@ def home(request):
 
 
 
-  return render(request, 'home.html', { 'template' : template, 'posts': posts, 'title': 'Home' })
+  return render(request, 'home.html', { 'template' : template, 'posts': posts, 'title': 'Home', 'user': user })
 
 
 def signup(request):

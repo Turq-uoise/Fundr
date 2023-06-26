@@ -1,5 +1,6 @@
 {% extends template %}
 {% block content %}
+{% load static %}
 
 
   {% if posts|length %}
@@ -39,8 +40,21 @@
   </div>
 
   {% else %}
-
-  <h2>No posts to show, <br>go <a href="{% url 'explore' %}">explore</a> some fundrs!</h2>
+  <div class="text-center border-bottom">
+    <h2 class="display-5 fw-bold">Welcome {{ user.username }}</h2>
+    <div class="col-lg-5 mx-auto" style="width:70%">
+      <p class="lead">The app for local people, to help local people. To get started, visit our Explore page, and follow some fundrs. Alternatively, create one for yourself.</p>
+      <div class="d-grid gap-2 mt-5 d-sm-flex justify-content-sm-center">
+        <a href="{% url 'explore' %}"><button type="button" class="btn btn-primary px-4 gap-3">Explore Fundrs</button></a>
+        <a href="{% url 'new_fundr' %}"><button type="button" class="btn btn-secondary px-4">New Fundr</button></a>
+      </div>
+    </div>
+    <div class="overflow-hidden" style="max-height: 30vh;">
+      <div class="container pt-5">
+        <img src="{% static 'main_app/landing.png' %}" class="img-fluid border rounded-3 shadow-lg" width="80%">
+      </div>
+    </div>
+  </div>
 
   {% endif %}
 

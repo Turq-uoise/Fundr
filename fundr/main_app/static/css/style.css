@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   --main-bg: white;
-  --header-clr: #005a4c;
+  --header-clr: #003b32;
   --post-bg: #F5FDFF;
   --accent-clr: #DDF0C2;
   --dark-grey: #8C999A; 
@@ -11,7 +11,7 @@
 html, body {
   margin: 0px;
   height: 100%;
-  font-family: 'Work Sans', sans-serif;
+  /* font-family: 'Work Sans', sans-serif; */
 }
 
 #FUNDR {

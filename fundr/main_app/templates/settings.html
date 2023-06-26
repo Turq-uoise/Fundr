@@ -2,16 +2,17 @@
 {% block content %}
 
 <h2>Settings</h2>
+<p class="lead">Tweak your distance settings, or upload an avatar.</p>
 <div class="slidecontainer">
   <form action="{% url 'update_settings' user.profile.id %}" method="POST">
     {% csrf_token %}
-  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange">
+  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange" style="color: pink;">
   <div id="slider-value"></div>
   <button type="submit" class="btn btn-primary">Submit</button>
   
 </form>
 </div>
-<a href="{% url 'add_avatar' user.profile.id %}" class="btn btn-warning">Upload Avatar</a>
+<a href="{% url 'add_avatar' user.profile.id %}" class="btn btn-secondary my-5">Upload Avatar</a>
 {% if messages %}
   <ul class="messages mt-3">
     {% for message in messages %}
