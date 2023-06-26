@@ -5,19 +5,26 @@
 <div class="slidecontainer">
   <form action="{% url 'update_settings' user.profile.id %}" method="POST">
     {% csrf_token %}
-  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange">
+  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range back" id="myRange">
   <div id="slider-value"></div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-  
-</form>
 </div>
+
+
+<div class="mb-3">
+  <label for="id_avatar" class="form-label">Avatar</label>
+  <input value="{% if object %}{{ object.avatar }}{% endif %}" type="file" name="avatar" accept="avatar/*" id="id_avatar">
+</div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
 {% if messages %}
   <ul class="messages mt-3">
     {% for message in messages %}
     <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }} {{message.tags }}</li>
       {% endfor %}
   </ul>
-  {% endif %}
+{% endif %}
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {

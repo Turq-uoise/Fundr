@@ -239,8 +239,6 @@ class FundrUpdate(UpdateView):
     return super().form_valid(form)
 
 
-
-
 def fundrs_detail(request, fundr_id):
 
   template = is_mobile(request)
@@ -327,9 +325,6 @@ def about(request):
   return render(request, 'about.html', { 'template' : template, 'title': 'About'})
 
 
-
-
-
 def contact(request):
   template = is_mobile(request)
   return render(request, 'contact.html', { 'template' : template, 'title': 'Contact Us'})
@@ -351,7 +346,7 @@ class SettingsView(TemplateView):
     # Access the request object through self.request here
     # You can add additional context variables based on the request
     return context
-
+    
 
 class SettingsUpdate(UpdateView):
   model = Profile
@@ -359,6 +354,18 @@ class SettingsUpdate(UpdateView):
   success_url = '/settings'
 
   def form_valid(self, form):
+    fundr_photo_file = self.request.FILES.get('image')
+    if fundr_photo_file:
+    # Upload the image to S3
+      s3 = boto3.client('s3')
+      key = uuid.uuid4().hex[:6] + fundr_photo_file.name[fundr_photo_file.name.rfind('.'):]
+      try:
+          bucket = os.environ['S3_BUCKET']
+          s3.upload_fileobj(fundr_photo_file, bucket, key)
+          image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+          form.instance.image = image_url
+      except Exception as e:
+          print('An error occurred uploading file to S3:', str(e))
     messages.success(self.request, 'Your catchment range has been updated')
     return super().form_valid(form)
     
