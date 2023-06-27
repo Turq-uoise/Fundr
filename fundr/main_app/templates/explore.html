@@ -63,7 +63,7 @@
       fundrFunded.innerText = `Fully Funded: ${goal}!`;
     }
     else {
-      fundrFunded.innerText = `£${currentFunded} funded of goal: £${goal}`;
+      fundrFunded.innerText = `£${currentFunded} funded out of goal: £${goal}`;
     }
 
     saveButton.value = fundrs[currentIndex].pk;
@@ -87,14 +87,17 @@
         if (currentFunded == goal) {
           fundrFunded.innerText = `Fully Funded: ${goal}!`;
         } else {
-          fundrFunded.innerText = `£${currentFunded} funded of goal: £${goal}`;
+          fundrFunded.innerText = `£${currentFunded} funded out of goal: £${goal}`;
         }
       }
       else {
         fundrName.innerText = "No more Fundrs to show!";
         fundrBio.style.display = "none";
         fundrFunded.style.display = "none";
+        fundrDistance.style.display = "none";
+        fundrImg.src = "https://www.iconsdb.com/icons/preview/white/square-xxl.png";
         nextButton.style.display = "none";
+        saveButton.style.display = "none";
       }
     });
 

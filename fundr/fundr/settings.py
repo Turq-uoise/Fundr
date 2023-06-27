@@ -88,14 +88,6 @@ WSGI_APPLICATION = 'fundr.wsgi.application'
 
 DATABASES = {
     'default': env.db()
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': env('DATABASE_NAME'),
-    #     'USER': env('DATABASE_USER'),
-    #     'PASSWORD': env('DATABASE_PASSWORD'),
-    #     'HOST': 'ep-morning-heart-773376.eu-central-1.aws.neon.tech',
-    #     'PORT': '5432',
-    # }
 }
 
 
