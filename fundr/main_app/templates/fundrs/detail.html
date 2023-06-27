@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container child-scroll">
-  <h2>Your Fundr</h2>
+  
   <div class="card ms-3 mb-5" style="width: 95%;">
     <img src="{{ fundr.image }}" class="card-img-top">
     <div class="card-body">
@@ -103,7 +103,7 @@
   {% endif %}
 
   {% if posts.count %}
-
+<div class="mb-5"  style="border-bottom: 1px solid grey" ></div>
   {% for post in posts.all %}
   <div class="card ms-3 mb-5" style="width: 95%;">
     <img src="{{ post.image }}" class="card-img-top">

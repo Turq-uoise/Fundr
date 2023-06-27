@@ -2,20 +2,20 @@
 {% block content %}
 
 <h2>Settings</h2>
-<p class="lead">Tweak your distance settings, or upload an avatar.</p>
+<p class="lead">Tweak your distance settings</p>
 <div class="slidecontainer">
   <form action="{% url 'update_settings' user.profile.id %}" method="POST">
     {% csrf_token %}
-  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange" style="color: pink;">
-  <div id="slider-value"></div>
+  <input  type="range" min="1" max="100" class="form-range " id="myRange" style="color: pink;">
+  <input type="number" id="slider-value" name="catchment" value="{{user.profile.catchment}}" class="d-none form-number"></input>
+  <h3 class="display-value" id="display-value">{{user.profile.catchment}}</h3>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>
-<a href="{% url 'add_avatar' user.profile.id %}" class="btn btn-secondary my-5">Upload Avatar</a>
 {% if messages %}
   <ul class="messages mt-3">
     {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }} {{message.tags }}</li>
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
       {% endfor %}
   </ul>
   {% endif %}
@@ -24,11 +24,29 @@
   document.addEventListener("DOMContentLoaded", function () {
     const sliderEl = document.getElementById('myRange')
     const valueEl = document.getElementById('slider-value')
-    valueEl.innerHTML = sliderEl.value + ' km'
+    const displayValueEl = document.getElementById('display-value')
+    valueEl.value = Math.round(valueEl.value)
+    displayValueEl.innerHTML = valueEl.value + ' km' 
+    valueEl.value = logslider(this.value)
     sliderEl.oninput = function(){
-      valueEl.innerHTML = this.value + ' km'
+      valueEl.value = logslider(this.value)
+      displayValueEl.innerHTML = valueEl.value + ' km'
+
+
+
     }
-  })
+  function logslider(position) {
+  var minp = 1;
+  var maxp = 100;
+  var minv = Math.log(1);
+  var maxv = Math.log(2000);
+  var scale = (maxv-minv) / (maxp-minp);
+  return Math.round(Math.exp(minv + scale*(position-minp)));
+}
+  });
+
+
+
 </script>
 
 {% endblock %}
