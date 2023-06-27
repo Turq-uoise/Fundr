@@ -1,7 +1,8 @@
 {% extends template %}
 {% block content %}
 
-<h2>Explore local Fundrs</h2>
+<h2>Explore Local Fundrs</h2>
+{% if fundr_list|length %}
 <p class="lead">Save the Fundr's you're interested in. You'll continue to see posts about them on your home page.</p>
 
 
@@ -22,13 +23,23 @@
         <button type="submit" style="margin-left: 20%;" class="btn" id="save-button" name="fundr_id" onclick="document.getElementById('next-button').click()">Save</button>
       </form>
   </div>
+{% else %}
+<div class="card ms-3 my-3" style="width: 95%";>
+  <img class="card-img-top" id="fundr-img">
+    <div class="card-body">
+      <p>No More Fundrs In Your Area</p>
+      <a href="{% url 'settings' %}" class="btn btn-primary">Increase your Distance Settings</a>
+    </div>
+</div>
 
 
 
+
+{% endif %}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
 
-    let currentIndex = {{current_index}};
+    let currentIndex = 0;
     const fundrs = JSON.parse(JSON.parse('{{ fundrs|escapejs }}'));
 
     const nextButton = document.getElementById("next-button");
@@ -59,7 +70,6 @@
     indexEl.value = currentIndex;
 
     nextButton.addEventListener("click", function () {
-      console.log('is calling on save')
       currentIndex++;
       if (currentIndex < fundrs.length) {
         let fundrObj = fundrs[currentIndex]

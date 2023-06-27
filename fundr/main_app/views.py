@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django import forms
 from django.core.files.uploadedfile import *
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import *
@@ -86,7 +86,7 @@ def explore(request):
   template = is_mobile(request)
   if request.method == 'POST':
     fundr_id = request.POST.get("fundr_id")
-    current_index = request.POST.get("current_index")
+    current_index = int(request.POST.get("current_index"))
     Fundraiser.objects.get(id=fundr_id).followers.add(request.user)
   else: 
     current_index = 0
@@ -104,10 +104,10 @@ def explore(request):
   
   fundrs = Fundraiser.objects.filter(distance_from_user__lte=user.catchment)
   fundrs = fundrs.order_by('distance_from_user','id')
-  
+  fundrs = fundrs[current_index:]
 
   serialized_fundrs = serializers.serialize('json', fundrs)
-  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index, 'title': 'Explore' })
+  return render(request, 'explore.html', { 'template' : template, 'fundrs': json.dumps(serialized_fundrs), "current_index": current_index, 'title': 'Explore', 'fundr_list': fundrs })
 
 
 def following(request):
