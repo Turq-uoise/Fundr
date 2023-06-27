@@ -36,7 +36,7 @@ class Fundraiser(models.Model):
     name = models.CharField(max_length = 100)
     bio  = models.CharField(max_length = 280)
     description = models.CharField(max_length = 1000)
-    image = models.CharField(max_length=200, default="http://localhost:8000/static/main_app/home_pic.png", null=True, blank=True)
+    image = models.CharField(max_length=200, default="https://fundr.fly.dev/static/main_app/home_pic.png", null=True, blank=True)
     goal = models.FloatField(
         default=1000.0,
         validators=[
