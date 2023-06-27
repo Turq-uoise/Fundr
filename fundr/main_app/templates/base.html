@@ -66,17 +66,17 @@
       <span class="m-2"><img src="{% static 'main_app/hamburger_icon_white.svg' %}" alt="Hamburger Menu" width="50px"></span>
     </button>
   </header>
-  <main class="container z-0 infinite-container mb-5 ">
+  <main class="container z-0 infinite-container mb-5 pb-5">
       {% block content %}
       {% endblock %}
   </main>
-  <footer class="navbar fixed-bottom dark-grey">
+  <div class="navbar fixed-bottom dark-grey">
     <div class="dark-grey container-fluid justify-content-md-between d-flex">
       <a href="{% url 'home' %}"><img src="{% static 'main_app/home_icon_white.svg' %}" alt="Home Icon" width="50px"></a>
       <a href="{% url 'explore' %}"><img src="{% static 'main_app/explore_icon_white.svg' %}" alt="Explore Icon" width="50px"></a>
       <a href="{% url 'following' %}"><img src="{% static 'main_app/lists_icon_white.svg' %}" alt="List Icon" width="50px"></a>
     </div>
-  </footer>
+  </div>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
     <div class="offcanvas-header">
