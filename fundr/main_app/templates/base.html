@@ -14,15 +14,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+  
 </head>
 <body>
   {% csrf_token %}
   <script>
     
     async function constructURL(lat, lon) {
-      let baseURL = 'http://localhost:8000'
+      let baseURL = 'https://fundr.fly.dev'
       let endpoint = '/userlocation/'
-      let queryParameters = `?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}/`;
+      let queryParameters = `?lat=${lat}&lon=${lon}/`;
       let url = baseURL + endpoint + queryParameters
       try {
         await fetch(url, {
@@ -55,24 +59,24 @@
     });
 
   </script>
-  <header class="navbar-fixed justify-content-between d-flex align-items-center header-clr z-3 position-sticky ">
+  <header class="navbar-fixed sticky-top justify-content-between d-flex align-items-center header-clr z-3 position-sticky ">
     <div><img class="logo m-2" src="{% static 'main_app/fundr_icon.png' %}" alt="Fundr Logo"></div>
     <div><a href="{% url 'home' %}" class="left brand-logo text-white text-decoration-none h2" id="FUNDR">FUNDR</a></div>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
       <span class="m-2"><img src="{% static 'main_app/hamburger_icon_white.svg' %}" alt="Hamburger Menu" width="50px"></span>
     </button>
   </header>
-  <main class="container z-0">
+  <main class="container z-0 infinite-container mb-5 ">
       {% block content %}
       {% endblock %}
   </main>
-  <nav class="navbar fixed-bottom dark-grey">
+  <footer class="navbar fixed-bottom dark-grey">
     <div class="dark-grey container-fluid justify-content-md-between d-flex">
       <a href="{% url 'home' %}"><img src="{% static 'main_app/home_icon_white.svg' %}" alt="Home Icon" width="50px"></a>
       <a href="{% url 'explore' %}"><img src="{% static 'main_app/explore_icon_white.svg' %}" alt="Explore Icon" width="50px"></a>
       <a href="{% url 'following' %}"><img src="{% static 'main_app/lists_icon_white.svg' %}" alt="List Icon" width="50px"></a>
     </div>
-  </nav>
+  </footer>
 
   <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
     <div class="offcanvas-header">
@@ -85,18 +89,21 @@
           <a class="nav-link active" aria-current="page" href="{% url 'your_fundrs' %}">YOUR FUNDRS</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">USER SETTINGS</a>
+          <a class="nav-link" href="{% url 'settings' %}">USER SETTINGS</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">LOG OUT</a>
         </li>
       </ul>
       <ul class="navbar-nav flex-grow-1 pe-3 d-flex flex-column justify-content-end">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">About</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Contact Us</a>
+          <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Terms & Privacy</a>
+          <a class="nav-link" href="{% url 'terms' %}">Terms & Privacy</a>
         </li>
       </ul>
     </div>

@@ -32,3 +32,8 @@ class SettingsForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['catchment',]
+
+
+class AvatarForm(forms.Form):
+    image = forms.ImageField(required=False)
+

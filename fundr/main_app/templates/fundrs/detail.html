@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="container child-scroll">
-  <h2>Your Fundr</h2>
+  
   <div class="card ms-3 mb-5" style="width: 95%;">
     <img src="{{ fundr.image }}" class="card-img-top">
     <div class="card-body">
@@ -35,12 +35,19 @@
           {% endif %}
         </button>
       </form>
-      {% if user.id == fundr.owner_id %}
 
+      {% if user.id == fundr.owner_id %}
+      
+       
+      
+      
       <button type="button" style='float: left;' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
         DELETE
       </button>
-
+       <a href="{% url 'update_fundr' fundr.id%}"  style='float: center;' class="btn btn-warning" >
+        UPDATE</a>
+      
+      
 
 
       <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -96,7 +103,7 @@
   {% endif %}
 
   {% if posts.count %}
-
+<div class="mb-5"  style="border-bottom: 1px solid grey" ></div>
   {% for post in posts.all %}
   <div class="card ms-3 mb-5" style="width: 95%;">
     <img src="{{ post.image }}" class="card-img-top">
