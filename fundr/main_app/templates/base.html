@@ -26,7 +26,7 @@
     async function constructURL(lat, lon) {
       let baseURL = 'https://fundr.fly.dev'
       let endpoint = '/userlocation/'
-      let queryParameters = `?lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}/`;
+      let queryParameters = `?lat=${lat}&lon=${lon}/`;
       let url = baseURL + endpoint + queryParameters
       try {
         await fetch(url, {
