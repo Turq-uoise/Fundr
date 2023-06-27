@@ -325,6 +325,7 @@ def add_post(request, fundr_id):
           fundraiser_id=form.cleaned_data['fundraiser'],
           date_created=datetime.date.today()
         )
+      
     except:
       print('An error occurred uploading file to S3')
 
