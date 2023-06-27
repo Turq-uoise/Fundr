@@ -9,7 +9,6 @@
   <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range" id="myRange" style="color: pink;">
   <div id="slider-value"></div>
   <button type="submit" class="btn btn-primary">Submit</button>
-  
 </form>
 </div>
 <a href="{% url 'add_avatar' user.profile.id %}" class="btn btn-secondary my-5">Upload Avatar</a>
@@ -28,8 +27,6 @@
     valueEl.innerHTML = sliderEl.value + ' km'
     sliderEl.oninput = function(){
       valueEl.innerHTML = this.value + ' km'
-
-
     }
   })
 </script>

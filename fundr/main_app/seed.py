@@ -161,7 +161,6 @@ def seedFunders():
 
     # create fundraiser and save it to the model
     f = Fundraiser(name=name, bio=bio, description=description, location=location, goal=goal, owner=owner, lat=lat, long=long, image=image)
-    print(f)
     f.save()
 
 def seedPosts():
@@ -188,7 +187,7 @@ def seed():
     seedPosts()
     
 
-# run following code in shell:
+# Run following code in shell:
 # python manage.py flush
 # select yes
 # python manage.py shell
