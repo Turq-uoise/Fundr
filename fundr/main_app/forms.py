@@ -31,4 +31,4 @@ class PostForm(forms.Form):
 class SettingsForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ['catchment', 'avatar']
+        fields = ('catchment', 'avatar')

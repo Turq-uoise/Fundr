@@ -6,23 +6,23 @@
 
 </div>
 <div class="container child-scroll">
-{% for fundr in fundrs %}
-  {% if forloop.counter == 1%}
-    <div class="card mb-1 mt-6 " style="width: 90%";>
-  {% else %}
-    <div class="card my-5" style="width: 90%";>
-  {% endif %}
-      <img src="{{ fundr.image }}" class="card-img-top">
-      <div class="card-body">
-        <h5 class="card-title">{{ fundr.name }}</h5>
-        <p class="card-title">{{ fundr.bio }}</p>
-        <p class="card-text">
-          £{{ fundr.current }}/£{{ fundr.goal }}
-        </p>
-        <a href="{% url 'detail' fundr.id %}" class="btn btn-primary stretched-link">View fundr</a>
+  {% for fundr in fundrs %}
+    {% if forloop.counter == 1%}
+      <div class="card mb-1 mt-6 mx-3 " style="width: 90%";>
+    {% else %}
+      <div class="card my-5 mx-3" style="width: 90%";>
+    {% endif %}
+        <img src="{{ fundr.image }}" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">{{ fundr.name }}</h5>
+          <p class="card-title">{{ fundr.bio }}</p>
+          <p class="card-text">
+            £{{ fundr.current }}/£{{ fundr.goal }}
+          </p>
+          <a href="{% url 'detail' fundr.id %}" class="btn btn-primary stretched-link">View fundr</a>
+        </div>
       </div>
-    </div>
-{% endfor %}
-  </div>
+  {% endfor %}
+</div>
 
 {% endblock %}

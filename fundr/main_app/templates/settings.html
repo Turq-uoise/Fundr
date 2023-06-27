@@ -2,21 +2,23 @@
 {% block content %}
 
 <h2>Settings</h2>
-<div class="slidecontainer">
-  <form action="{% url 'update_settings' user.profile.id %}" method="POST">
-    {% csrf_token %}
-  <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range back" id="myRange">
-  <div id="slider-value"></div>
-</div>
+<form action="{% url 'update_settings' user.profile.id %}" enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  <div class="slidecontainer">
+    <input name="catchment" type="range" min="1" max="2000" value={{user.profile.catchment}} class="form-range back" id="myRange">
+    <div id="slider-value"></div>
+  </div>
 
+  {{user.profile.avatar}}
+  {{user.profile.catchment}}
+  <div class="mb-3">
+    <label for="id_avatar" class="form-label">Avatar</label>
+    <img src="{{ user.profile.avatar }}">
+    <input value="{% if object %}{{ object.avatar }}{% endif %}" type="file" name="avatar" accept="avatar/*" id="id_avatar">
+  </div>
 
-<div class="mb-3">
-  <label for="id_avatar" class="form-label">Avatar</label>
-  <input value="{% if object %}{{ object.avatar }}{% endif %}" type="file" name="avatar" accept="avatar/*" id="id_avatar">
-</div>
-
-  <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
 {% if messages %}
   <ul class="messages mt-3">

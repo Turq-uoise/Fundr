@@ -223,10 +223,8 @@ class FundrUpdate(UpdateView):
 
   def form_valid(self, form):
     post_code = form.instance.location.strip(' ')
-    print(post_code)
     id = self.kwargs.get('pk')
     if not validation.is_valid_postcode(post_code):
-      print('not a postcode')
       messages.error(self.request, 'Not a valid postcode')
       return redirect('/fundrs/{}/update'.format(id))
     if form.instance.goal < 100 or form.instance.goal > 100000:
@@ -342,7 +340,6 @@ class SettingsView(TemplateView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    print(**kwargs)
     template = is_mobile(self.request)
     context['template'] = template
     # Access the request object through self.request here
@@ -351,21 +348,49 @@ class SettingsView(TemplateView):
     
 
 class SettingsUpdate(UpdateView):
+  template_name = 'settings.html'
   model = Profile
   form_class = SettingsForm
   success_url = '/settings'
 
+  def get(self, request, *args, **kwargs):
+    # Access the request object here
+    # You can perform any necessary operations with the request
+    print("hello 1")
+    self.request = request
+    if (request.user.is_authenticated != True):
+      return redirect('/accounts/login/')
+    
+    p = Profile.objects.get(id=kwargs.get('pk'))
+    if (self.request.user.profile != p.owner):
+      return redirect('/home')
+    
+    # Call the parent class's get() method to handle form-related logic
+    return super().get(request, *args, **kwargs)
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    
+    template = is_mobile(self.request)
+    context['template'] = template
+    # Access the request object through self.request here
+    # You can add additional context variables based on the request
+    return context
+  
   def form_valid(self, form):
-    fundr_photo_file = self.request.FILES.get('image')
-    if fundr_photo_file:
+    print("hello 2")
+    avatar = self.request.FILES.get('avatar')
+    print(avatar)
+
+    if avatar:
     # Upload the image to S3
       s3 = boto3.client('s3')
-      key = uuid.uuid4().hex[:6] + fundr_photo_file.name[fundr_photo_file.name.rfind('.'):]
+      key = uuid.uuid4().hex[:6] + avatar.name[avatar.name.rfind('.'):]
       try:
-          bucket = os.environ['S3_BUCKET']
-          s3.upload_fileobj(fundr_photo_file, bucket, key)
-          image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
-          form.instance.image = image_url
+        bucket = os.environ['S3_BUCKET']
+        s3.upload_fileobj(avatar, bucket, key)
+        image_url = f"{os.environ['S3_BASE_URL']}{bucket}/{key}"
+        form.instance.image = image_url
       except Exception as e:
           print('An error occurred uploading file to S3:', str(e))
     messages.success(self.request, 'Your catchment range has been updated')
