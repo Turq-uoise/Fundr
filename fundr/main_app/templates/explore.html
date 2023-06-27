@@ -3,8 +3,11 @@
 
 <h2>Explore Local Fundrs</h2>
 {% if fundr_list|length %}
+{% if template == 'base.html'%}
+<p class="lead">Save the Fundr's you're interested in</p>
+{% else %}
 <p class="lead">Save the Fundr's you're interested in. You'll continue to see posts about them on your home page.</p>
-
+{% endif %}
 
   <div class="card ms-3 my-3" style="width: 95%";>
     <img class="card-img-top" id="fundr-img">
