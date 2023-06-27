@@ -155,5 +155,5 @@ LOGGING = {
 
 CORS_ALLOWED_ORIGINS = [
     # Add your allowed origins here
-    'http://localhost:8000',  # Example: Allow requests from localhost
+    'http://localhost:8000', 'https://fundr.fly.dev' # Example: Allow requests from localhost
 ]

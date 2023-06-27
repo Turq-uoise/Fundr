@@ -311,6 +311,9 @@ def add_post(request, fundr_id):
     # do the amazon s3 upload:
     s3 = boto3.client('s3')
     key = uuid.uuid4().hex[:6] + post_photo_file.name[post_photo_file.name.rfind('.'):]
+    print(s3)
+    print(key)
+    print(form.errors)
     try:
       bucket = os.environ['S3_BUCKET']
       s3.upload_fileobj(post_photo_file, bucket, key)
@@ -327,6 +330,13 @@ def add_post(request, fundr_id):
         )
       
     except:
+      new_post = Post.objects.create(
+          title=form.cleaned_data['title'],
+          content=form.cleaned_data['content'],
+          owner_id=form.cleaned_data['owner'],
+          fundraiser_id=form.cleaned_data['fundraiser'],
+          date_created=datetime.date.today()
+        )
       print('An error occurred uploading file to S3')
 
   return redirect('detail', fundr_id=fundr_id)
